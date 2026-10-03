@@ -1,75 +1,179 @@
-# React + TypeScript + Vite
+# Eigo Quest
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Duolingo 風の UI/UX で、英単語と瞬間英作文を学べる英語学習ウェブアプリです。
+間隔反復システム（SRS）で復習日を自動管理し、学習データはブラウザの LocalStorage に保存します。サーバーは不要です。
 
-Currently, two official plugins are available:
+## 主な機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **パス型ステージ選択**: 「未開放」「プレイ可能」「クリア済（★・王冠つき）」が一目でわかるマップ UI
+- **ダッシュボード風ヘッダー**: 連続学習日数（ストリーク）、今日の獲得 XP、1 日の目標バー
+- **今日の復習ウィジェット**: 今日復習すべき問題数を大きく表示し、ワンタップで復習開始
+- **学習セッション**
+  - 英単語は 4 択、瞬間英作文は英文入力（別解にも対応）
+  - 正解・不正解で変わるアニメーションと効果音
+  - 解答後に解説と発音（ブラウザの音声合成）を表示
+- **自己評価（SRS 連動）**: 「もう一度／難しい／普通／簡単」を選ぶと、次回復習日を自動計算して保存
+- **弱点自動ピックアップ**: 「今日が復習日」「間違い率が高い」「新出」の順で優先して出題
+- **学習データの可視化**
+  - GitHub 風ヒートマップ（問題数／XP の切り替え）
+  - 未学習・学習中・マスター済の円グラフと進捗バー
+  - ストリーク、最長記録、累計 XP、正解率、レベル
 
-## React Compiler
+## 技術スタック
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 18 / TypeScript
+- Vite 6
+- Tailwind CSS 3
+- lucide-react（アイコン）
+- LocalStorage（データ保存）
 
-## Expanding the ESLint configuration
+## セットアップ
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Node.js 18 以上を推奨します。
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+ブラウザで http://localhost:5173 を開いてください。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### スクリプト
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| コマンド | 内容 |
+| --- | --- |
+| `npm run dev` | 開発サーバーを起動 |
+| `npm run build` | 型チェック（tsc）と本番ビルド |
+| `npm run preview` | ビルド結果をローカルで確認 |
+
+## 使い方
+
+1. ホーム画面のマップでステージをタップし、「レッスン開始」を押します。
+2. 問題に答えて「チェック」を押します。
+3. 正誤の表示と解説が出たら、どれくらい覚えていたかを 4 段階から選びます。
+4. 選んだ評価をもとに、その問題の次回復習日が更新されます。
+5. 「記録」タブで学習の推移を確認できます。
+
+見た目をすぐ確認したいときは、「記録」タブ下部の **「デモデータを入れる」** を押してください。過去 16 週間分の学習履歴と学習状況のサンプルが生成されます。**「データをリセット」** で初期状態に戻せます。
+
+## ディレクトリ構成
 
 ```
+.
+├─ index.html
+├─ package.json
+├─ vite.config.ts
+├─ tsconfig.json
+├─ postcss.config.js
+├─ tailwind.config.js
+└─ src/
+   ├─ main.tsx
+   ├─ index.css
+   ├─ App.tsx                    # 画面の切り替えとセッション開始
+   ├─ types.ts                   # データ型の定義
+   ├─ data/
+   │  └─ mockData.ts             # ステージと問題の初期データ
+   ├─ lib/
+   │  ├─ srs.ts                  # SRS の計算ロジックと日付ユーティリティ
+   │  ├─ stats.ts                # ストリーク・集計・ステージ状態の判定
+   │  ├─ session.ts              # 弱点ピックアップと正誤判定
+   │  ├─ store.ts                # LocalStorage への保存（React フック）
+   │  ├─ demo.ts                 # デモデータ生成
+   │  └─ sound.ts                # 効果音（Web Audio API）
+   └─ components/
+      ├─ Header.tsx              # ストリーク・XP ヘッダー
+      ├─ ReviewWidget.tsx        # 今日の復習ウィジェット
+      ├─ PathMap.tsx             # パス型ステージ選択
+      ├─ Session.tsx             # 学習セッションと自己評価
+      └─ Dashboard.tsx           # 学習データの可視化
+```
+
+## データモデル
+
+型定義は `src/types.ts` にあります。
+
+- **Card**: 問題文（日本語）、正解（英語）、別解、解説、カテゴリ、ステージ ID に加えて、SRS の状態を持ちます。
+  - `interval`（復習間隔・日）、`easeFactor`（易しさ係数）、`repetitions`（連続正解回数）
+  - `nextReviewDate`（次回復習日）、`lapses`（忘却回数）、`totalAttempts` / `totalCorrect`
+- **ReviewLog**: 1 回の回答ごとの履歴（日付、評価、正誤、獲得 XP、復習間隔の前後）
+- **Stage**: マップに表示されるステージ
+
+## SRS のルール
+
+SM-2 系の簡易版です。実装は `src/lib/srs.ts` の `calcNextReview` にあります。
+
+| 評価 | 連続正解 | 次回までの間隔 | 易しさ係数 |
+| --- | --- | --- | --- |
+| もう一度 | 0 に戻す | 1 日後 | −0.20（下限 1.3） |
+| 難しい | +1 | 約 1.2 倍（最低 +1 日） | −0.15（下限 1.3） |
+| 普通 | +1 | 1 日 → 3 日 → 前回間隔 × 易しさ係数 | 変化なし |
+| 簡単 | +1 | 3 日 → 7 日 → 前回間隔 × 易しさ係数 × 1.3 | +0.15 |
+
+- 間隔の上限は 365 日です。
+- 回答を間違えた場合は、「普通」「簡単」は選べません。
+- 「もう一度」を選んだ問題は、同じセッションの最後にもう一度出題されます。
+- 間隔が 21 日以上で、連続正解が 3 回以上になった問題を「マスター済」とみなします。
+
+## 弱点自動ピックアップ
+
+実装は `src/lib/session.ts` の `pickSessionCards` にあります。各問題にスコアを付け、上位から選びます。
+
+1. 今日が復習日（期限を過ぎた日数が長いほど優先）
+2. 間違い率が高い、または忘却回数が多い
+3. 未学習の新出問題（ステージ内のレッスンでは優先度が高く、弱点モードでは若いステージを優先）
+
+ホームの「今日の復習」から始めると、弱点モード（最大 8 問）になります。マップからステージを選ぶと、そのステージの問題を中心に 5 問出題されます。
+
+## XP とレベル
+
+- 正解: 普通・難しいで 10〜12 XP、簡単で 15 XP
+- 不正解: 2 XP
+- 100 XP ごとにレベルが 1 上がります。
+
+## 問題を追加・編集する
+
+`src/data/mockData.ts` の `SEEDS` に 1 行追加します。
+
+```ts
+['s2', 'vocab', '家電', '電子レンジ', 'microwave', '解説文をここに書く'],
+['s2', 'speaking', '日課', '毎晩歯を磨きます。', 'I brush my teeth every night.', '解説文', ['I brush my teeth every evening.']],
+```
+
+並びは `[ステージID, 種類, カテゴリ, 日本語, 英語の正解, 解説, 別解の配列（省略可）]` です。
+
+- 種類は `'vocab'`（4 択）か `'speaking'`（入力）です。
+- ID は先頭から順に自動で振られます。既存の問題の途中に挿入すると、保存済みの学習データとずれます。追加は末尾にしてください。
+- 4 択の選択肢は、他の英単語問題の正解から自動で作られます。英単語問題は 4 件以上あると正しく動きます。
+- ステージを増やす場合は、同じファイルの `STAGES` に追加します。
+
+## データの保存
+
+学習データは LocalStorage のキー `eigo-quest:v1` に保存されます。
+
+- ブラウザやドメインごとに別のデータになります。
+- ブラウザのサイトデータを消すと、学習記録も消えます。
+- データ形式を大きく変える場合は、`AppData.version` を上げて移行処理を書いてください。
+
+## トラブルシューティング
+
+**`Failed to resolve import "lucide-react"` と表示される**
+依存パッケージが入っていません。`package.json` のある階層で次を実行してください。
+
+```bash
+npm install
+rm -rf node_modules/.vite
+npm run dev
+```
+
+**効果音が鳴らない**
+ブラウザの仕様で、ページを操作する前は音が出ません。セッション画面右上のスピーカーアイコンがオフになっていないかも確認してください。
+
+**発音ボタンで音声が出ない**
+ブラウザの音声合成（Web Speech API）を使っています。非対応の環境や、英語音声が入っていない環境では再生されません。
+
+## 今後の拡張アイデア
+
+- ステージ・問題の追加（JSON の読み込みなど）
+- クラウド同期（アカウント機能）
+- 音声入力でのスピーキング練習
+- 1 日の目標 XP の設定変更
