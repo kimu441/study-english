@@ -5,8 +5,12 @@ import { addDays, calcXp, todayStr } from './srs';
 /** ダッシュボードの見た目確認用デモデータ */
 export function generateDemoData(): AppData {
   const today = todayStr();
-  const cards = createInitialCards().map((c, i) => {
-    if (i >= 15) return c; // ステージ4・5は未学習
+    const all = createInitialCards();
+  const coreCount = all.filter((c) => c.deck !== 'toeic').length;
+  const cards = all.map((c, i) => {
+    const k = c.deck === 'toeic' ? i - coreCount : i;
+    // 基本フレーズは先頭15問、TOEIC Bridge 単語は先頭30語を学習済みにする
+    if (k >= (c.deck === 'toeic' ? 30 : 15)) return c;
     const attempts = 3 + (i % 5);
     const wrong = i % 4 === 1 ? 2 : i % 4 === 2 ? 1 : 0;
     const mastered = i % 5 === 4;

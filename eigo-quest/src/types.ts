@@ -4,6 +4,12 @@ export type CardType = 'vocab' | 'speaking';
 /** 自己評価（SRSへの入力） */
 export type Rating = 'again' | 'hard' | 'good' | 'easy';
 
+/** 問題のグループ: 基本フレーズ / TOEIC Bridge 単語 */
+export type Deck = 'core' | 'toeic';
+
+/** 単語レベル: 中学 / 高校 */
+export type WordLevel = 'junior' | 'senior';
+
 /** 学習ステータス（ダッシュボードの集計用） */
 export type CardStatus = 'new' | 'learning' | 'mastered';
 
@@ -21,6 +27,10 @@ export interface Card {
   alternatives?: string[];
   explanation: string;
 
+    /** 省略時は 'core'（基本フレーズ） */
+  deck?: Deck;
+  /** TOEIC Bridge 単語のレベル */
+  level?: WordLevel;
   // ---- SRS の状態 ----
   /** 復習間隔（日） */
   interval: number;

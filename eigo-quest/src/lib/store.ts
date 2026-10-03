@@ -15,7 +15,24 @@ function load(): AppData {
       if (parsed?.version === 1 && Array.isArray(parsed.cards) && Array.isArray(parsed.logs)) {
         // 新しく追加された問題があれば取り込む
         const existing = new Map(parsed.cards.map((c) => [c.id, c]));
-        return { version: 1, cards: seed.map((s) => existing.get(s.id) ?? s), logs: parsed.logs };
+              // 問題の内容は最新のデータ(seed)を使い、学習の進み具合(SRS状態)だけ保存データから引き継ぐ
+        const merged = seed.map((s) => {
+          const e = existing.get(s.id);
+          return e
+            ? {
+                ...s,
+                interval: e.interval,
+                easeFactor: e.easeFactor,
+                repetitions: e.repetitions,
+                nextReviewDate: e.nextReviewDate,
+                lapses: e.lapses,
+                totalAttempts: e.totalAttempts,
+                totalCorrect: e.totalCorrect,
+                lastReviewedAt: e.lastReviewedAt,
+              }
+            : s;
+        });
+        return { version: 1, cards: merged, logs: parsed.logs };
       }
     }
   } catch {

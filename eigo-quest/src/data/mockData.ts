@@ -1,3 +1,4 @@
+import { createToeicCards } from './toeicBridge';
 import type { Card, CardType, Stage } from '../types';
 import { initialSrsState } from '../lib/srs';
 
@@ -53,9 +54,14 @@ const SEEDS: Seed[] = [
 ];
 
 export function createInitialCards(): Card[] {
+  return [...createCoreCards(), ...createToeicCards()];
+}
+
+function createCoreCards(): Card[] {
   return SEEDS.map(([stageId, type, category, prompt, answer, explanation, alternatives], i) => ({
     id: `c${String(i + 1).padStart(3, '0')}`,
     type,
+    deck: 'core' as const,
     stageId,
     category,
     prompt,

@@ -4,6 +4,7 @@ import type { Card, Rating } from '../types';
 import { RATING_LABEL, calcXp, formatInterval, previewInterval } from '../lib/srs';
 import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../lib/session';
 import { isSoundOn, setSoundOn, sfx } from '../lib/sound';
+import { LEVEL_LABEL, WORD_DIRECTION } from '../data/toeicBridge';
 
 interface Props {
   items: SessionItem[];
@@ -51,14 +52,32 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
   const item = queue[index];
   const card = item ? (allCards.find((c) => c.id === item.card.id) ?? item.card) : null;
 
-  const choices = useMemo(() => {
-    if (!card || card.type !== 'vocab') return [];
-    const others = shuffle(allCards.filter((c) => c.type === 'vocab' && c.answer !== card.answer))
-      .slice(0, 3)
-      .map((c) => c.answer);
-    return shuffle([card.answer, ...others]);
+  // TOEIC Bridge 単語は出題の向きを切り替え可能（英→日 / 日→英）。基本フレーズは常に 日→英
+  const reverse = useMemo(() => {
+    if (!card || card.type !== 'vocab' || card.deck !== 'toeic') return false;
+    if (WORD_DIRECTION === 'en-ja') return true;
+    if (WORD_DIRECTION === 'ja-en') return false;
+    return Math.random() < 0.5;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item?.card.id, index]);
+
+  const correctText = card ? (reverse ? card.prompt : card.answer) : '';
+  const questionText = card ? (reverse ? card.answer : card.prompt) : '';
+
+  const choices = useMemo(() => {
+    if (!card || card.type !== 'vocab') return [];
+    const text = (c: Card) => (reverse ? c.prompt : c.answer);
+    const deck = card.deck ?? 'core';
+    const pool = allCards.filter(
+      (c) => c.type === 'vocab' && (c.deck ?? 'core') === deck && text(c) !== correctText,
+    );
+    // 同じステージの単語を優先して、紛らわしい選択肢にする
+    const same = shuffle(pool.filter((c) => c.stageId === card.stageId));
+    const rest = shuffle(pool.filter((c) => c.stageId !== card.stageId));
+    const others = [...new Set([...same, ...rest].map(text))].slice(0, 3);
+    return shuffle([correctText, ...others]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item?.card.id, index, reverse]);
 
   const canCheck = card?.type === 'vocab' ? selected !== null : input.trim().length > 0;
 
@@ -67,7 +86,7 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
     const ok = skip
       ? false
       : card.type === 'vocab'
-        ? selected === card.answer
+        ? selected === correctText
         : isAnswerCorrect(card, input);
     setCorrect(ok);
     setPhase('review');
@@ -176,12 +195,22 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
       <div className="mx-auto w-full max-w-xl flex-1 overflow-y-auto px-4 pb-72">
         <div className="mb-3 flex items-center gap-2">
           <span className={`rounded-full px-3 py-1 text-xs font-black ${reason.cls}`}>{reason.label}</span>
+          {card.level && (
+            <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-black text-purple-600">
+              {LEVEL_LABEL[card.level]}
+            </span>
+          )}
           <span className="text-xs font-extrabold text-slate-400">
-            {card.type === 'vocab' ? '英単語' : '瞬間英作文'}・{card.category}
+            {card.deck === 'toeic' ? 'TOEIC Bridge 単語' : card.type === 'vocab' ? '英単語' : '瞬間英作文'}・
+            {card.category}
           </span>
         </div>
         <h2 className="mb-5 text-xl font-black text-slate-700">
-          {card.type === 'vocab' ? '英語で正しいのはどれ？' : '英語にしてみよう'}
+          {card.type === 'vocab'
+            ? reverse
+              ? '日本語の意味はどれ？'
+              : '英語で正しいのはどれ？'
+            : '英語にしてみよう'}
         </h2>
 
         <div
@@ -189,8 +218,13 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
           className={`mb-6 flex items-start gap-3 ${phase === 'review' ? (correct ? 'animate-pop' : 'animate-shake') : ''}`}
         >
           <div className="text-5xl">🦉</div>
-          <div className="relative rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-xl font-extrabold text-slate-700">
-            {card.prompt}
+          <div className="relative flex items-center gap-2 rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-xl font-extrabold text-slate-700">
+            {questionText}
+            {reverse && (
+              <button onClick={() => speak(card.answer)} className="rounded-full p-1 text-sky-500 hover:bg-sky-50" aria-label="発音を聞く">
+                <Volume2 className="h-5 w-5" />
+              </button>
+            )}
             <span className="absolute -left-[7px] top-5 h-3 w-3 rotate-45 border-b-2 border-l-2 border-slate-200 bg-white" />
           </div>
         </div>
@@ -201,7 +235,7 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
               const isSel = selected === c;
               const reveal = phase === 'review';
               const cls = reveal
-                ? c === card.answer
+                ? c === correctText
                   ? 'border-green-500 bg-green-100 text-green-700'
                   : isSel
                     ? 'border-red-500 bg-red-100 text-red-600'
@@ -290,6 +324,7 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
             </div>
             <div className={`mt-2 flex items-center gap-2 text-lg font-extrabold ${correct ? 'text-green-700' : 'text-red-700'}`}>
               {card.answer}
+              {card.deck === 'toeic' && <span className="text-base font-bold opacity-80">（{card.prompt}）</span>}
               <button onClick={() => speak(card.answer)} className="rounded-full p-1.5 hover:bg-white/60" aria-label="発音を聞く">
                 <Volume2 className="h-5 w-5" />
               </button>
