@@ -1,4 +1,4 @@
-import type { Card, ReviewLog, ScopeKey, StudyPlan } from '../types';
+import type { Card, ReviewLog, ScopeKey, Stage, StudyPlan } from '../types';
 import { LEVELS } from '../data/decks';
 import { addDays, diffDays } from './srs';
 import { isDue } from './stats';
@@ -47,6 +47,10 @@ export interface ScopeProgress {
   key: ScopeKey;
   total: number;
   done: number;
+  /** 今日初めて学習した数 */
+  todayNew: number;
+  /** この範囲の1日あたりの新出の目標数 */
+  dailyNew: number;
 }
 
 export interface PlanSummary {
@@ -59,7 +63,7 @@ export interface PlanSummary {
   total: number;
   done: number;
   remaining: number;
-  /** 1日あたりの新出の目標数（今日の分を含めて残りを均等に割る） */
+  /** 1日あたりの新出の目標数（範囲ごとの目標の合計） */
   dailyNew: number;
   /** 1日あたりの新出クエスト数 */
   dailyQuests: number;
@@ -77,8 +81,8 @@ export interface PlanSummary {
 /**
  * 試験日までの学習計画を計算する（純粋関数）。
  *  - 試験前日から plan.reviewDays 日間は総復習期間とし、新出はそれまでに終える
- *  - 残りの新出を学習日数で均等に割り、1日の目標数を出す。今日学習した分は今日の目標に含めるので、
- *    1日の途中で目標数が変わらない
+ *  - 範囲ごとに、残りの新出を学習日数で均等に割って1日の目標数を出す。今日学習した分は今日の目標に
+ *    含めるので、1日の途中で目標数が変わらない
  *  - 総復習期間に入っても新出が残っていれば、試験前日までで割り直す
  */
 export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, today: string): PlanSummary {
@@ -86,21 +90,25 @@ export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, t
   const inScope = cards.filter((c) => scope.has(scopeOf(c)));
   const first = firstStudyDates(logs);
 
-  const scopes = plan.scope.map((key) => {
-    const sc = inScope.filter((c) => scopeOf(c) === key);
-    return { key, total: sc.length, done: sc.filter((c) => c.totalAttempts > 0).length };
-  });
-  const total = inScope.length;
-  const done = inScope.filter((c) => c.totalAttempts > 0).length;
-  const remaining = total - done;
-  const todayNew = inScope.filter((c) => first.get(c.id) === today).length;
-
   const daysLeft = diffDays(plan.examDate, today);
   const learnDays = daysLeft - plan.reviewDays;
   const learnEndDate = addDays(plan.examDate, -plan.reviewDays - 1);
   const spreadDays = learnDays > 0 ? learnDays : daysLeft;
-  const remainingAtStart = remaining + todayNew;
-  const dailyNew = remainingAtStart === 0 ? 0 : spreadDays > 0 ? Math.ceil(remainingAtStart / spreadDays) : remainingAtStart;
+  const perDay = (remainingAtStart: number) =>
+    remainingAtStart === 0 ? 0 : spreadDays > 0 ? Math.ceil(remainingAtStart / spreadDays) : remainingAtStart;
+
+  const scopes = plan.scope.map((key) => {
+    const sc = inScope.filter((c) => scopeOf(c) === key);
+    const done = sc.filter((c) => c.totalAttempts > 0).length;
+    const todayNew = sc.filter((c) => first.get(c.id) === today).length;
+    return { key, total: sc.length, done, todayNew, dailyNew: perDay(sc.length - done + todayNew) };
+  });
+  const sum = (f: (s: ScopeProgress) => number) => scopes.reduce((n, s) => n + f(s), 0);
+  const total = sum((s) => s.total);
+  const done = sum((s) => s.done);
+  const remaining = total - done;
+  const todayNew = sum((s) => s.todayNew);
+  const dailyNew = sum((s) => s.dailyNew);
 
   const dueToday = inScope.filter((c) => isDue(c, today)).length;
 
@@ -129,6 +137,30 @@ export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, t
     recentPace,
     projectedFinish,
   };
+}
+
+export interface StageGoal {
+  /** 今日のうちに進めておきたいステージ */
+  stage: Stage;
+  /** マップ上の何番目のステージか（0 始まり） */
+  index: number;
+  /** 今日の新出の残り */
+  left: number;
+}
+
+/**
+ * 範囲の1日の目標数を、マップのステージに置き換える。
+ * マップを上から順に進める前提で、「昨日までに学習した数 + 今日の目標数」に届くステージを返す。
+ */
+export function stageGoal(stages: Stage[], cards: Card[], progress: ScopeProgress): StageGoal | null {
+  if (progress.dailyNew === 0 || stages.length === 0) return null;
+  const target = progress.done - progress.todayNew + progress.dailyNew;
+  let cumulative = 0;
+  for (const [index, stage] of stages.entries()) {
+    cumulative += cards.filter((c) => c.stageId === stage.id).length;
+    if (cumulative >= target) return { stage, index, left: Math.max(0, progress.dailyNew - progress.todayNew) };
+  }
+  return { stage: stages[stages.length - 1], index: stages.length - 1, left: Math.max(0, progress.dailyNew - progress.todayNew) };
 }
 
 /** カレンダー表示用に、指定した日付それぞれの予定と実績を返す */

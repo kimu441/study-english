@@ -4,12 +4,14 @@ import type { BookId, Card, ComposeMode, CustomWord, Deck, Stage, WordLevel } fr
 import ReviewWidget from './ReviewWidget';
 import PathMap from './PathMap';
 import CustomWordsPanel from './CustomWordsPanel';
+import TodayGoal from './plan/TodayGoal';
 import Segmented from './ui/Segmented';
 import { BOOK_META, DECK_META, LEVELS, LEVEL_LABEL, WORD_BOOKS } from '../data/decks';
 import { todayStr } from '../lib/srs';
 import { getStageStates, isDue, isWeak } from '../lib/stats';
 import type { SessionMode } from '../lib/session';
 import { readPref, writePref } from '../lib/storage';
+import { stageGoal, type PlanSummary } from '../lib/plan';
 
 interface Props {
   deck: Deck;
@@ -21,6 +23,9 @@ interface Props {
   /** 単語タブのみ: マイ単語帳 */
   customWords?: CustomWord[];
   onSaveCustomWords?: (words: CustomWord[]) => void;
+  /** 学習計画（未設定なら null） */
+  planSummary: PlanSummary | null;
+  onOpenPlan: () => void;
 }
 
 const LEVEL_KEY = (deck: Deck) => `eigo-quest:level:${deck}`;
@@ -47,6 +52,8 @@ export default function TrackHome({
   onComposeModeChange,
   customWords = [],
   onSaveCustomWords,
+  planSummary,
+  onOpenPlan,
 }: Props) {
   const [book, setBook] = useState<BookId>(() => (deck === 'word' ? loadBook() : 'toeic'));
   const [savedLevel, setLevel] = useState<WordLevel>(() => loadLevel(deck));
@@ -69,6 +76,11 @@ export default function TrackHome({
   const levelStages = useMemo(() => bookStages.filter((s) => s.level === level), [bookStages, level]);
   const levelCards = useMemo(() => cards.filter((c) => c.book === book && c.level === level), [cards, book, level]);
   const states = useMemo(() => getStageStates(levelStages, levelCards), [levelStages, levelCards]);
+
+  // 表示中の単語帳・レベルが学習計画のどの範囲にあたるか
+  const scopeKey = book === 'toeic' ? (`${deck}:${level}` as const) : book;
+  const progress = planSummary?.scopes.find((s) => s.key === scopeKey) ?? null;
+  const goal = useMemo(() => (progress ? stageGoal(levelStages, levelCards, progress) : null), [progress, levelStages, levelCards]);
 
   const dueCount = levelCards.filter((c) => isDue(c, today)).length;
   const weakCount = levelCards.filter(isWeak).length;
@@ -123,8 +135,16 @@ export default function TrackHome({
 
       {levelCards.length > 0 && (
         <>
+          {planSummary && (
+            <TodayGoal summary={planSummary} progress={progress} goal={goal} unit={DECK_META[deck].unit} onOpenPlan={onOpenPlan} />
+          )}
           <ReviewWidget dueCount={dueCount} weakCount={weakCount} onStart={startWeak} />
-          <PathMap key={`${deck}-${book}-${level}`} states={states} onStart={(id) => onStart(levelCards, 'stage', id)} />
+          <PathMap
+            key={`${deck}-${book}-${level}`}
+            states={states}
+            goalStageId={progress && progress.todayNew < progress.dailyNew ? goal?.stage.id : undefined}
+            onStart={(id) => onStart(levelCards, 'stage', id)}
+          />
         </>
       )}
     </>

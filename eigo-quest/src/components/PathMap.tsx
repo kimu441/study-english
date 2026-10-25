@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, Crown, Lock, Play, Star, X } from 'lucide-react';
+import { Check, Crown, Flag, Lock, Play, Star, X } from 'lucide-react';
 import type { StageState } from '../lib/stats';
 
 interface Props {
   states: StageState[];
   onStart: (stageId: string) => void;
+  /** 「今日ここまで」の旗を立てるステージ */
+  goalStageId?: string;
 }
 
 const W = 320;
 const ROW = 150;
 const TOP = 70;
 
-export default function PathMap({ states, onStart }: Props) {
+export default function PathMap({ states, onStart, goalStageId }: Props) {
   const [selected, setSelected] = useState<StageState | null>(null);
   const currentRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +82,16 @@ export default function PathMap({ states, onStart }: Props) {
                 )}
               </button>
             </div>
+            {s.stage.id === goalStageId && (
+              // ノードが左寄りなら右側、右寄りなら左側に旗を出す
+              <div
+                className="absolute flex w-24 items-center justify-center gap-1 rounded-2xl border-2 border-indigo-300 bg-indigo-50 py-1 text-xs font-black text-indigo-600"
+                style={{ left: x < W / 2 ? x + 50 : x - 50 - 96, top: y - 16 }}
+              >
+                <Flag className="h-4 w-4 fill-indigo-400" />
+                今日ここまで
+              </div>
+            )}
             <div className="absolute w-44 text-center" style={{ left: x - 88, top: y + 54 }}>
               <div className={`text-sm font-black leading-tight ${s.status === 'locked' ? 'text-slate-400' : 'text-slate-700'}`}>
                 {s.stage.emoji} {s.stage.title}

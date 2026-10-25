@@ -85,6 +85,8 @@ export default function App() {
             stages={wordStages}
             cards={wordCards}
             onStart={start}
+            planSummary={planSummary}
+            onOpenPlan={() => setTab('plan')}
             customWords={customWords}
             onSaveCustomWords={saveCustomWords}
           />
@@ -96,6 +98,8 @@ export default function App() {
             stages={compositionStages}
             cards={compositionCards}
             onStart={start}
+            planSummary={planSummary}
+            onOpenPlan={() => setTab('plan')}
             composeMode={composeMode}
             onComposeModeChange={changeComposeMode}
           />
