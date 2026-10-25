@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { BookmarkX, Play, Volume2 } from 'lucide-react';
 import type { Card, Deck } from '../types';
-import { LEVEL_LABEL } from '../data/decks';
+import Segmented from './ui/Segmented';
+import { DECK_META, LEVEL_LABEL } from '../data/decks';
 import { REVIEW_CLEAR_STREAK } from '../lib/review';
 import { speak } from '../lib/sound';
 
@@ -15,8 +16,8 @@ type Filter = 'all' | Deck;
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: 'all', label: 'すべて' },
-  { id: 'word', label: '単語' },
-  { id: 'composition', label: '瞬間英作文' },
+  { id: 'word', label: DECK_META.word.short },
+  { id: 'composition', label: DECK_META.composition.label },
 ];
 
 /** 復習リスト: 一度でも間違えた・わからなかった問題の一覧 */
@@ -59,20 +60,20 @@ export default function ReviewList({ cards, onStart, onRemove }: Props) {
         </button>
       </section>
 
-      <div className="flex rounded-2xl bg-slate-100 p-1.5">
-        {FILTERS.map((f) => (
-          <button
-            key={f.id}
-            onClick={() => setFilter(f.id)}
-            className={`flex-1 rounded-xl py-2 text-sm font-black transition ${
-              filter === f.id ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-400'
-            }`}
-          >
-            {f.label}
-            <span className="ml-1 text-xs">{count(f.id)}</span>
-          </button>
-        ))}
-      </div>
+      <Segmented
+        options={FILTERS.map((f) => ({
+          id: f.id,
+          label: (
+            <>
+              {f.label}
+              <span className="ml-1 text-xs">{count(f.id)}</span>
+            </>
+          ),
+        }))}
+        value={filter}
+        onChange={setFilter}
+        activeClass="text-rose-600"
+      />
 
       {shown.length === 0 ? (
         <p className="rounded-2xl bg-slate-50 p-6 text-center text-sm font-bold text-slate-400">
@@ -94,7 +95,7 @@ export default function ReviewList({ cards, onStart, onRemove }: Props) {
                 <div className="text-sm font-bold text-slate-500">{c.prompt}</div>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-extrabold text-slate-400">
                   <span className="rounded-full bg-purple-100 px-2 py-0.5 text-purple-600">{LEVEL_LABEL[c.level]}</span>
-                  <span>{c.deck === 'word' ? '単語' : '英作文'}・{c.category}</span>
+                  <span>{DECK_META[c.deck].short}・{c.category}</span>
                   <span className="text-rose-500">ミス {c.missCount}回</span>
                   <span className="flex items-center gap-0.5" title="連続正解">
                     {Array.from({ length: REVIEW_CLEAR_STREAK }, (_, k) => (

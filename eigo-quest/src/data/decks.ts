@@ -1,5 +1,6 @@
 import type { Card, Deck, Stage, WordLevel } from '../types';
 import { initialSrsState } from '../lib/srs';
+import { parseCsv } from '../lib/csv';
 import wordsCsv from './toeic-bridge-words.csv?raw';
 import sentencesCsv from './toeic-bridge-sentences.csv?raw';
 
@@ -21,42 +22,13 @@ const STAGE_EMOJI: Record<Deck, Record<WordLevel, string>> = {
   word: { junior: '📘', senior: '📕' },
   composition: { junior: '💬', senior: '🗣️' },
 };
-const DECK_LABEL: Record<Deck, string> = { word: 'TOEIC Bridge 単語', composition: '瞬間英作文' };
-const UNIT: Record<Deck, string> = { word: '語', composition: '文' };
 
-/** ダブルクォート対応の簡易CSVパーサー */
-function parseCsv(text: string): string[][] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = '';
-  let quoted = false;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    if (quoted) {
-      if (ch === '"') {
-        if (text[i + 1] === '"') {
-          field += '"';
-          i++;
-        } else quoted = false;
-      } else field += ch;
-    } else if (ch === '"') quoted = true;
-    else if (ch === ',') {
-      row.push(field);
-      field = '';
-    } else if (ch === '\n' || ch === '\r') {
-      if (ch === '\r' && text[i + 1] === '\n') i++;
-      row.push(field);
-      field = '';
-      rows.push(row);
-      row = [];
-    } else field += ch;
-  }
-  if (field !== '' || row.length) {
-    row.push(field);
-    rows.push(row);
-  }
-  return rows.filter((r) => r.some((c) => c.trim() !== ''));
-}
+/** デッキの表示名と数え方 */
+export const DECK_META: Record<Deck, { label: string; short: string; unit: string }> = {
+  word: { label: 'TOEIC Bridge 単語', short: '単語', unit: '語' },
+  composition: { label: '瞬間英作文', short: '英作文', unit: '文' },
+};
+export const DECKS: Deck[] = ['word', 'composition'];
 
 type CardContent = Omit<Card, keyof ReturnType<typeof initialSrsState>>;
 type Item = { level: WordLevel; category: string; content: Omit<CardContent, 'stageId' | 'deck' | 'level' | 'category'> };
@@ -69,7 +41,7 @@ const slug = (s: string) =>
 
 /** CSV の行を [level, category, ...rest] に分解（コメント行・ヘッダー行・不正な行は除く） */
 function dataRows(text: string) {
-  return parseCsv(text.replace(/^﻿/, ''))
+  return parseCsv(text.replace(/^\uFEFF/, ''))
     .map((r) => r.map((c) => c.trim()))
     .filter(([level, category]) => (level === 'junior' || level === 'senior') && !!category)
     .map(([level, category, ...rest]) => ({ level: level as WordLevel, category, rest }));
@@ -148,7 +120,7 @@ function build(deck: Deck, items: Item[]) {
           deck,
           level,
           title: `${category}${parts > 1 ? `（その${p + 1}）` : ''}`,
-          description: `${DECK_LABEL[deck]}（${LEVEL_LABEL[level]}レベル）${chunk.length}${UNIT[deck]}`,
+          description: `${DECK_META[deck].label}（${LEVEL_LABEL[level]}レベル）${chunk.length}${DECK_META[deck].unit}`,
           emoji: STAGE_EMOJI[deck][level],
         });
         for (const w of chunk) cards.push({ ...w.content, deck, level, stageId, category });

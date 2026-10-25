@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Award, Flame, Target, Trophy, Zap } from 'lucide-react';
 import type { Card, Deck, ReviewLog } from '../types';
+import Segmented from './ui/Segmented';
+import { DECKS, DECK_META } from '../data/decks';
 import { addDays, todayStr } from '../lib/srs';
 import { dayStats, getStreak, statusBreakdown } from '../lib/stats';
 
@@ -65,7 +67,7 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
 
   // ドーナツ
   const total = deckCards.length || 1;
-  const unit = deck === 'word' ? '語' : '文';
+  const unit = DECK_META[deck].unit;
   const segs = [
     { key: 'mastered', label: 'マスター済', n: status.mastered, color: '#22c55e', bar: 'bg-green-500' },
     { key: 'learning', label: '学習中', n: status.learning, color: '#38bdf8', bar: 'bg-sky-400' },
@@ -131,17 +133,15 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
       <section className="rounded-3xl border-2 border-slate-200 p-4">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-black text-slate-700">学習カレンダー</h3>
-          <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-black">
-            {(['count', 'xp'] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMetric(m)}
-                className={`rounded-lg px-3 py-1 ${metric === m ? 'bg-white text-green-600 shadow-sm' : 'text-slate-400'}`}
-              >
-                {m === 'count' ? '問題数' : 'XP'}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            size="sm"
+            options={[
+              { id: 'count', label: '問題数' },
+              { id: 'xp', label: 'XP' },
+            ]}
+            value={metric}
+            onChange={setMetric}
+          />
         </div>
         <div ref={scrollRef} className="overflow-x-auto pb-2">
           <div className="flex w-max gap-1">
@@ -182,17 +182,7 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
       <section className="rounded-3xl border-2 border-slate-200 p-4">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-black text-slate-700">学習ステータス</h3>
-          <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-black">
-            {(['word', 'composition'] as const).map((d) => (
-              <button
-                key={d}
-                onClick={() => setDeck(d)}
-                className={`rounded-lg px-3 py-1 ${deck === d ? 'bg-white text-green-600 shadow-sm' : 'text-slate-400'}`}
-              >
-                {d === 'word' ? '単語' : '英作文'}
-              </button>
-            ))}
-          </div>
+          <Segmented size="sm" options={DECKS.map((d) => ({ id: d, label: DECK_META[d].short }))} value={deck} onChange={setDeck} />
         </div>
         <div className="flex items-center gap-5">
           <div className="relative h-32 w-32 shrink-0">

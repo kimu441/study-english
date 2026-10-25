@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Keyboard, Mic } from 'lucide-react';
-import type { Card, Deck, Stage, WordLevel } from '../types';
+import type { Card, ComposeMode, Deck, Stage, WordLevel } from '../types';
 import ReviewWidget from './ReviewWidget';
 import PathMap from './PathMap';
-import type { ComposeMode } from './Session';
-import { LEVELS, LEVEL_LABEL } from '../data/decks';
+import Segmented from './ui/Segmented';
+import { DECK_META, LEVELS, LEVEL_LABEL } from '../data/decks';
 import { todayStr } from '../lib/srs';
 import { getStageStates, isDue, isWeak } from '../lib/stats';
 import type { SessionMode } from '../lib/session';
+import { readPref, writePref } from '../lib/storage';
 
 interface Props {
   deck: Deck;
@@ -21,14 +22,10 @@ interface Props {
 const LEVEL_KEY = (deck: Deck) => `eigo-quest:level:${deck}`;
 
 function loadLevel(deck: Deck): WordLevel {
-  try {
-    const v = localStorage.getItem(LEVEL_KEY(deck));
-    if (v === 'junior' || v === 'senior') return v;
-  } catch {
-    /* 読めない環境は既定値 */
-  }
-  return 'junior';
+  return readPref(LEVEL_KEY(deck)) === 'senior' ? 'senior' : 'junior';
 }
+
+const LEVEL_OPTIONS = LEVELS.map((l) => ({ id: l, label: `${LEVEL_LABEL[l]}レベル` }));
 
 /** 単語 / 瞬間英作文 それぞれのホーム画面（レベル切り替え + 今日の復習 + ステージマップ） */
 export default function TrackHome({ deck, stages, cards, onStart, composeMode, onComposeModeChange }: Props) {
@@ -37,11 +34,7 @@ export default function TrackHome({ deck, stages, cards, onStart, composeMode, o
 
   const changeLevel = (l: WordLevel) => {
     setLevel(l);
-    try {
-      localStorage.setItem(LEVEL_KEY(deck), l);
-    } catch {
-      /* 保存できなくても動作は続ける */
-    }
+    writePref(LEVEL_KEY(deck), l);
   };
 
   const levelStages = useMemo(() => stages.filter((s) => s.level === level), [stages, level]);
@@ -50,7 +43,6 @@ export default function TrackHome({ deck, stages, cards, onStart, composeMode, o
 
   const dueCount = levelCards.filter((c) => isDue(c, today)).length;
   const weakCount = levelCards.filter(isWeak).length;
-  const unit = deck === 'word' ? '語' : '文';
 
   const startWeak = () => {
     // 未開放ステージの新出問題は弱点モードから除外
@@ -61,23 +53,11 @@ export default function TrackHome({ deck, stages, cards, onStart, composeMode, o
   return (
     <>
       <div>
-        <div className="flex rounded-2xl bg-slate-100 p-1.5">
-          {LEVELS.map((l) => (
-            <button
-              key={l}
-              onClick={() => changeLevel(l)}
-              className={`flex-1 rounded-xl py-2 text-sm font-black transition ${
-                level === l ? 'bg-white text-green-600 shadow-sm' : 'text-slate-400'
-              }`}
-            >
-              {LEVEL_LABEL[l]}レベル
-            </button>
-          ))}
-        </div>
+        <Segmented options={LEVEL_OPTIONS} value={level} onChange={changeLevel} />
         <p className="mt-2 text-center text-xs font-extrabold text-slate-400">
           {deck === 'word' ? 'TOEIC Bridge 頻出単語' : 'TOEIC Bridge の場面で使う文'}・{LEVEL_LABEL[level]}レベル 全
           {levelCards.length}
-          {unit}
+          {DECK_META[deck].unit}
         </p>
       </div>
 

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { AppData, Card, Rating, ReviewLog } from '../types';
+import type { AppData, Card, Rating, ReviewLog, StudyPlan } from '../types';
 import { createInitialCards } from '../data/decks';
 import { calcNextReview, calcXp, initialSrsState, todayStr } from './srs';
 import { applyReviewResult } from './review';
 import { generateDemoData } from './demo';
+import { readJson, writePref } from './storage';
 
 const KEY = 'eigo-quest:v1';
 
@@ -12,39 +13,27 @@ const PROGRESS_KEYS = Object.keys(initialSrsState()) as (keyof ReturnType<typeof
 
 function load(): AppData {
   const seed = createInitialCards();
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as AppData;
-      if (parsed?.version === 1 && Array.isArray(parsed.cards) && Array.isArray(parsed.logs)) {
-        const existing = new Map(parsed.cards.map((c) => [c.id, c]));
-        // 問題の内容は最新のデータ(seed)を使い、学習の進み具合だけ保存データから引き継ぐ。
-        // 古い保存データに無い項目（復習リストなど）は初期値のまま。
-        const merged = seed.map((s) => {
-          const e = existing.get(s.id) as Partial<Card> | undefined;
-          if (!e) return s;
-          const progress = Object.fromEntries(PROGRESS_KEYS.map((k) => [k, e[k] ?? s[k]]));
-          return { ...s, ...progress } as Card;
-        });
-        return { version: 1, cards: merged, logs: parsed.logs };
-      }
-    }
-  } catch {
-    /* 破損データは初期化 */
+  const parsed = readJson<AppData>(KEY);
+  if (parsed?.version === 1 && Array.isArray(parsed.cards) && Array.isArray(parsed.logs)) {
+    const existing = new Map(parsed.cards.map((c) => [c.id, c]));
+    // 問題の内容は最新のデータ(seed)を使い、学習の進み具合だけ保存データから引き継ぐ。
+    // 古い保存データに無い項目（復習リストなど）は初期値のまま。
+    const merged = seed.map((s) => {
+      const e = existing.get(s.id) as Partial<Card> | undefined;
+      if (!e) return s;
+      const progress = Object.fromEntries(PROGRESS_KEYS.map((k) => [k, e[k] ?? s[k]]));
+      return { ...s, ...progress } as Card;
+    });
+    return { version: 1, cards: merged, logs: parsed.logs, plan: parsed.plan ?? null };
   }
-  return { version: 1, cards: seed, logs: [] };
+  // 未保存・破損データは初期化
+  return { version: 1, cards: seed, logs: [], plan: null };
 }
 
 export function useStore() {
   const [data, setData] = useState<AppData>(load);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(data));
-    } catch {
-      /* 容量超過などは無視 */
-    }
-  }, [data]);
+  useEffect(() => writePref(KEY, JSON.stringify(data)), [data]);
 
   /** 1回答を記録: SRS更新 + 復習リスト更新 + 履歴追加 */
   const answerCard = useCallback((cardId: string, rating: Rating, answeredCorrectly: boolean) => {
@@ -85,8 +74,23 @@ export function useStore() {
     }));
   }, []);
 
-  const reset = useCallback(() => setData({ version: 1, cards: createInitialCards(), logs: [] }), []);
-  const loadDemo = useCallback(() => setData(generateDemoData()), []);
+  const setPlan = useCallback((plan: StudyPlan | null) => setData((prev) => ({ ...prev, plan })), []);
 
-  return { cards: data.cards, logs: data.logs, answerCard, removeFromReview, reset, loadDemo };
+  // 学習計画（試験日）はリセット・デモ投入でも残す
+  const reset = useCallback(
+    () => setData((prev) => ({ version: 1, cards: createInitialCards(), logs: [], plan: prev.plan })),
+    [],
+  );
+  const loadDemo = useCallback(() => setData((prev) => ({ ...generateDemoData(), plan: prev.plan })), []);
+
+  return {
+    cards: data.cards,
+    logs: data.logs,
+    plan: data.plan ?? null,
+    answerCard,
+    removeFromReview,
+    setPlan,
+    reset,
+    loadDemo,
+  };
 }

@@ -1,14 +1,12 @@
 import { useMemo, useRef, useState } from 'react';
-import { BookmarkPlus, Check, Eye, Trophy, Volume2, VolumeX, X, Zap, Target } from 'lucide-react';
-import type { Card, Rating } from '../types';
-import { RATING_LABEL, calcXp, formatInterval, previewInterval } from '../lib/srs';
-import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../lib/session';
-import { isSoundOn, setSoundOn, sfx, speak } from '../lib/sound';
-import { LEVEL_LABEL, WORD_DIRECTION } from '../data/decks';
-import { REVIEW_CLEAR_STREAK } from '../lib/review';
-
-/** 瞬間英作文の解答方法: 入力 / 口頭（答えを見て自己判定） */
-export type ComposeMode = 'type' | 'oral';
+import { Eye, Volume2, VolumeX, X } from 'lucide-react';
+import type { Card, ComposeMode, Rating } from '../../types';
+import { calcXp } from '../../lib/srs';
+import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../../lib/session';
+import { isSoundOn, setSoundOn, sfx, speak } from '../../lib/sound';
+import { DECK_META, LEVEL_LABEL, WORD_DIRECTION } from '../../data/decks';
+import SessionResult, { type SessionTotals } from './SessionResult';
+import AnswerSheet from './AnswerSheet';
 
 interface Props {
   items: SessionItem[];
@@ -26,13 +24,6 @@ const REASON: Record<SessionReason, { label: string; cls: string }> = {
   extra: { label: '練習', cls: 'bg-slate-100 text-slate-500' },
 };
 
-const RATING_STYLE: Record<Rating, string> = {
-  again: 'bg-red-500 border-red-700',
-  hard: 'bg-orange-400 border-orange-600',
-  good: 'bg-sky-500 border-sky-700',
-  easy: 'bg-green-500 border-green-700',
-};
-
 export default function Session({ items, allCards, onRecord, onExit, composeMode = 'type' }: Props) {
   const [queue, setQueue] = useState<SessionItem[]>(items);
   const [index, setIndex] = useState(0);
@@ -41,7 +32,7 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
   const [selected, setSelected] = useState<string | null>(null);
   const [input, setInput] = useState('');
   const [correct, setCorrect] = useState<boolean | null>(null);
-  const [result, setResult] = useState({ xp: 0, correct: 0, total: 0, added: 0 });
+  const [result, setResult] = useState<SessionTotals>({ xp: 0, correct: 0, total: 0, added: 0 });
   const [sound, setSound] = useState(isSoundOn());
   const requeued = useRef(new Set<string>());
 
@@ -127,58 +118,11 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
     }
   };
 
-  // ---------- 結果画面 ----------
-  if (phase === 'done') {
-    const acc = result.total ? Math.round((result.correct / result.total) * 100) : 0;
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-white px-6 text-center">
-        {['🎉', '⭐', '✨', '🎊', '⭐', '✨', '🎉'].map((e, i) => (
-          <span
-            key={i}
-            className="pointer-events-none absolute top-0 animate-confetti text-2xl"
-            style={{ left: `${8 + i * 14}%`, animationDelay: `${i * 0.35}s` }}
-          >
-            {e}
-          </span>
-        ))}
-        <Trophy className="h-24 w-24 animate-bobble fill-amber-400 text-amber-500" />
-        <h1 className="mt-4 text-3xl font-black text-amber-500">レッスン完了！</h1>
-        <div className="mt-6 flex gap-3">
-          <div className="w-32 rounded-2xl border-2 border-yellow-400 bg-yellow-400 pb-3 text-white">
-            <div className="py-1 text-xs font-black">獲得XP</div>
-            <div className="mx-0.5 flex items-center justify-center gap-1 rounded-xl bg-white py-3 text-2xl font-black text-yellow-500">
-              <Zap className="h-6 w-6 fill-yellow-400" />
-              {result.xp}
-            </div>
-          </div>
-          <div className="w-32 rounded-2xl border-2 border-green-500 bg-green-500 pb-3 text-white">
-            <div className="py-1 text-xs font-black">正解率</div>
-            <div className="mx-0.5 flex items-center justify-center gap-1 rounded-xl bg-white py-3 text-2xl font-black text-green-500">
-              <Target className="h-6 w-6" />
-              {acc}%
-            </div>
-          </div>
-        </div>
-        {result.added > 0 && (
-          <p className="mt-5 flex items-center gap-1.5 rounded-2xl bg-rose-50 px-4 py-2 text-sm font-extrabold text-rose-600">
-            <BookmarkPlus className="h-5 w-5" />
-            {result.added}問を復習リストに追加しました
-          </p>
-        )}
-        <button
-          onClick={onExit}
-          className="mt-10 w-full max-w-sm rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white active:translate-y-0.5 active:border-b-2"
-        >
-          ホームに戻る
-        </button>
-      </div>
-    );
-  }
+  if (phase === 'done') return <SessionResult result={result} onExit={onExit} />;
 
   if (!card || !item) return null;
   const reason = REASON[item.reason];
   const progress = ((index + (phase === 'review' ? 1 : 0)) / queue.length) * 100;
-  const answers = [card.answer, ...(card.alternatives ?? [])];
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white">
@@ -215,7 +159,7 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
             <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-600">復習リスト</span>
           )}
           <span className="truncate text-xs font-extrabold text-slate-400">
-            {card.deck === 'word' ? 'TOEIC Bridge 単語' : '瞬間英作文'}・{card.category}
+            {DECK_META[card.deck].label}・{card.category}
           </span>
         </div>
         <h2 className="mb-5 text-xl font-black text-slate-700">
@@ -364,66 +308,7 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
         </div>
       )}
 
-      {/* 下部: 判定 + 自己評価シート（SRS連動） */}
-      {phase === 'review' && correct !== null && (
-        <div
-          className={`fixed inset-x-0 bottom-0 animate-slide-up border-t-2 p-4 pb-6 ${
-            correct ? 'border-green-200 bg-green-100' : 'border-red-200 bg-red-100'
-          }`}
-        >
-          <div className="mx-auto max-w-xl">
-            <div className={`flex items-center gap-2 text-xl font-black ${correct ? 'text-green-600' : 'text-red-600'}`}>
-              <span className={`flex h-8 w-8 items-center justify-center rounded-full text-white ${correct ? 'bg-green-500' : 'bg-red-500'}`}>
-                {correct ? <Check className="h-5 w-5" strokeWidth={4} /> : <X className="h-5 w-5" strokeWidth={4} />}
-              </span>
-              {correct ? 'ナイス！正解！' : '正解はこちら'}
-            </div>
-            <div className={`mt-2 flex items-center gap-2 text-lg font-extrabold ${correct ? 'text-green-700' : 'text-red-700'}`}>
-              {card.answer}
-              {card.deck === 'word' && <span className="text-base font-bold opacity-80">（{card.prompt}）</span>}
-              <button onClick={() => speak(card.answer)} className="rounded-full p-1.5 hover:bg-white/60" aria-label="発音を聞く">
-                <Volume2 className="h-5 w-5" />
-              </button>
-            </div>
-            {answers.length > 1 && (
-              <p className={`mt-1 text-sm font-bold ${correct ? 'text-green-700/80' : 'text-red-700/80'}`}>
-                別解：{answers.slice(1, 4).join(' / ')}
-              </p>
-            )}
-            <p className={`mt-1 text-sm font-bold ${correct ? 'text-green-700/80' : 'text-red-700/80'}`}>{card.explanation}</p>
-            {!correct ? (
-              <p className="mt-2 flex items-center gap-1 text-xs font-extrabold text-rose-600">
-                <BookmarkPlus className="h-4 w-4" />
-                復習リストに追加されます
-              </p>
-            ) : (
-              card.inReviewList && (
-                <p className="mt-2 text-xs font-extrabold text-green-700">
-                  復習リスト：連続正解 {card.reviewStreak + 1} / {REVIEW_CLEAR_STREAK}（{REVIEW_CLEAR_STREAK}回でリストから外れます）
-                </p>
-              )
-            )}
-
-            <div className="mb-2 mt-4 text-xs font-extrabold text-slate-500">どれくらい覚えていた？</div>
-            <div className="grid grid-cols-4 gap-2">
-              {(['again', 'hard', 'good', 'easy'] as Rating[]).map((r) => {
-                const disabled = !correct && (r === 'good' || r === 'easy');
-                return (
-                  <button
-                    key={r}
-                    disabled={disabled}
-                    onClick={() => rate(r)}
-                    className={`rounded-2xl border-b-4 px-1 py-2.5 text-white transition active:translate-y-0.5 active:border-b-2 disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-400 ${RATING_STYLE[r]}`}
-                  >
-                    <div className="text-sm font-black">{RATING_LABEL[r]}</div>
-                    <div className="text-[11px] font-bold opacity-90">{formatInterval(previewInterval(card, r))}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+      {phase === 'review' && correct !== null && <AnswerSheet card={card} correct={correct} onRate={rate} />}
     </div>
   );
 }

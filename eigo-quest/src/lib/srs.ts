@@ -25,6 +25,14 @@ export function diffDays(a: string, b: string): number {
   return Math.round((p(a) - p(b)) / 86400000);
 }
 
+const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
+
+/** 'YYYY-MM-DD' → '11月30日(日)' */
+export function formatDateJa(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return `${m}月${d}日(${WEEKDAYS[new Date(y, m - 1, d).getDay()]})`;
+}
+
 // ---------- 表示用 ----------
 export const RATING_LABEL: Record<Rating, string> = {
   again: 'もう一度',

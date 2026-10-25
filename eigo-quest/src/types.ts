@@ -10,6 +10,9 @@ export type Deck = 'word' | 'composition';
 /** 単語レベル: 中学 / 高校 */
 export type WordLevel = 'junior' | 'senior';
 
+/** 瞬間英作文の解答方法: 入力 / 口頭（答えを見て自己判定） */
+export type ComposeMode = 'type' | 'oral';
+
 /** 学習ステータス（ダッシュボードの集計用） */
 export type CardStatus = 'new' | 'learning' | 'mastered';
 
@@ -80,9 +83,24 @@ export interface Stage {
   emoji: string;
 }
 
+/** 学習範囲の単位（例: 'word:junior' = 単語・中学レベル） */
+export type ScopeKey = `${Deck}:${WordLevel}`;
+
+/** 試験日に向けた学習計画 */
+export interface StudyPlan {
+  /** 試験日 (YYYY-MM-DD) */
+  examDate: string;
+  /** 試験日までに網羅したい範囲 */
+  scope: ScopeKey[];
+  /** 試験直前の総復習期間（日）。この期間は新出を入れない */
+  reviewDays: number;
+}
+
 /** LocalStorage に保存するデータ全体 */
 export interface AppData {
   version: 1;
   cards: Card[];
   logs: ReviewLog[];
+  /** 未設定なら null（古い保存データには項目自体が無い） */
+  plan?: StudyPlan | null;
 }

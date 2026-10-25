@@ -9,6 +9,9 @@ export interface SessionItem {
 }
 export type SessionMode = 'weak' | 'stage' | 'review';
 
+/** 1回のセッション（クエスト）で出題する問題数 */
+export const SESSION_SIZE: Record<SessionMode, number> = { stage: 5, weak: 8, review: 10 };
+
 export function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -32,7 +35,7 @@ export function pickSessionCards(
   opts: { mode: SessionMode; stageId?: string; size?: number; stageOrder?: Record<string, number>; today?: string },
 ): SessionItem[] {
   const { mode, stageId, stageOrder = {}, today = todayStr() } = opts;
-  const size = opts.size ?? (mode === 'stage' ? 5 : mode === 'review' ? 10 : 8);
+  const size = opts.size ?? SESSION_SIZE[mode];
 
   if (mode === 'review') {
     const picked = cards
