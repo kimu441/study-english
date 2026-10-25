@@ -2,12 +2,12 @@ import type { Card } from '../types';
 import { diffDays, todayStr } from './srs';
 import { errorRate, isDue, isWeak } from './stats';
 
-export type SessionReason = 'weak' | 'due' | 'new' | 'extra';
+export type SessionReason = 'review' | 'weak' | 'due' | 'new' | 'extra';
 export interface SessionItem {
   card: Card;
   reason: SessionReason;
 }
-export type SessionMode = 'weak' | 'stage';
+export type SessionMode = 'weak' | 'stage' | 'review';
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -24,13 +24,28 @@ export function shuffle<T>(arr: T[]): T[] {
  *  2) 過去の間違い率・忘却回数が高い          +最大60 + lapses*4
  *  3) 未学習の新出問題                        stage:+40 / weak:+15（若いステージ優先）
  * スコア上位から size 問を選び、出題順はシャッフルする。
+ *
+ * mode='review' は復習リスト専用: 間違えた回数が多い・最近間違えたものを優先する。
  */
 export function pickSessionCards(
   cards: Card[],
   opts: { mode: SessionMode; stageId?: string; size?: number; stageOrder?: Record<string, number>; today?: string },
 ): SessionItem[] {
   const { mode, stageId, stageOrder = {}, today = todayStr() } = opts;
-  const size = opts.size ?? (mode === 'stage' ? 5 : 8);
+  const size = opts.size ?? (mode === 'stage' ? 5 : mode === 'review' ? 10 : 8);
+
+  if (mode === 'review') {
+    const picked = cards
+      .filter((c) => c.inReviewList)
+      .map((card) => {
+        const sinceMiss = card.missedAt ? diffDays(today, card.missedAt) : 30;
+        return { card, score: card.missCount * 10 + Math.max(0, 14 - sinceMiss) + Math.random() * 5 };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, size)
+      .map(({ card }) => ({ card, reason: 'review' as const }));
+    return shuffle(picked);
+  }
   const pool = mode === 'stage' && stageId ? cards.filter((c) => c.stageId === stageId) : cards;
 
   const scored = pool.map((card) => {
@@ -63,13 +78,32 @@ export function pickSessionCards(
   return shuffle(picked);
 }
 
-const normalize = (s: string) =>
-  s
+/** 短縮形は元の形に揃えて比較する（I'm = I am など） */
+const CONTRACTIONS: [RegExp, string][] = [
+  [/\bcan't\b/g, 'cannot'],
+  [/\bwon't\b/g, 'will not'],
+  [/\bshan't\b/g, 'shall not'],
+  [/\bi'm\b/g, 'i am'],
+  [/\blet's\b/g, 'let us'],
+  [/\b(he|she|it|that|what|where|there|who|here)'s\b/g, '$1 is'],
+  [/n't\b/g, ' not'],
+  [/'re\b/g, ' are'],
+  [/'ll\b/g, ' will'],
+  [/'ve\b/g, ' have'],
+  [/'d\b/g, ' would'],
+  [/\bcan not\b/g, 'cannot'],
+];
+
+const normalize = (s: string) => {
+  let n = s
     .toLowerCase()
     .replace(/[’‘]/g, "'")
-    .replace(/[.,!?;:"]/g, '')
+    .replace(/[.,!?;:"“”]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
+  for (const [re, to] of CONTRACTIONS) n = n.replace(re, to);
+  return n.replace(/\s+/g, ' ');
+};
 
 export function isAnswerCorrect(card: Card, input: string): boolean {
   const n = normalize(input);

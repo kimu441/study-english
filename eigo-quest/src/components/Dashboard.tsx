@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Award, Flame, Target, Trophy, Zap } from 'lucide-react';
-import type { Card, ReviewLog } from '../types';
+import type { Card, Deck, ReviewLog } from '../types';
 import { addDays, todayStr } from '../lib/srs';
 import { dayStats, getStreak, statusBreakdown } from '../lib/stats';
 
@@ -32,11 +32,13 @@ function message(streak: number, studiedToday: boolean) {
 export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
   const today = todayStr();
   const [metric, setMetric] = useState<'count' | 'xp'>('count');
+  const [deck, setDeck] = useState<Deck>('word');
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const days = useMemo(() => dayStats(logs), [logs]);
   const streak = useMemo(() => getStreak(logs, today), [logs, today]);
-  const status = useMemo(() => statusBreakdown(cards), [cards]);
+  const deckCards = useMemo(() => cards.filter((c) => c.deck === deck), [cards, deck]);
+  const status = useMemo(() => statusBreakdown(deckCards), [deckCards]);
 
   const totalXp = logs.reduce((s, l) => s + l.xp, 0);
   const totalCorrect = logs.filter((l) => l.correct).length;
@@ -62,7 +64,8 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
   }, []);
 
   // ドーナツ
-  const total = cards.length || 1;
+  const total = deckCards.length || 1;
+  const unit = deck === 'word' ? '語' : '文';
   const segs = [
     { key: 'mastered', label: 'マスター済', n: status.mastered, color: '#22c55e', bar: 'bg-green-500' },
     { key: 'learning', label: '学習中', n: status.learning, color: '#38bdf8', bar: 'bg-sky-400' },
@@ -177,7 +180,20 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
 
       {/* ステータス円グラフ */}
       <section className="rounded-3xl border-2 border-slate-200 p-4">
-        <h3 className="mb-3 text-lg font-black text-slate-700">学習ステータス</h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-black text-slate-700">学習ステータス</h3>
+          <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-black">
+            {(['word', 'composition'] as const).map((d) => (
+              <button
+                key={d}
+                onClick={() => setDeck(d)}
+                className={`rounded-lg px-3 py-1 ${deck === d ? 'bg-white text-green-600 shadow-sm' : 'text-slate-400'}`}
+              >
+                {d === 'word' ? '単語' : '英作文'}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex items-center gap-5">
           <div className="relative h-32 w-32 shrink-0">
             <svg viewBox="0 0 120 120" className="-rotate-90">
@@ -214,7 +230,8 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
                   <div className="flex justify-between text-sm font-extrabold text-slate-600">
                     <span>{s.label}</span>
                     <span>
-                      {s.n}語 ({pct}%)
+                      {s.n}
+                      {unit} ({pct}%)
                     </span>
                   </div>
                   <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-slate-100">

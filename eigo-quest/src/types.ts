@@ -4,8 +4,8 @@ export type CardType = 'vocab' | 'speaking';
 /** 自己評価（SRSへの入力） */
 export type Rating = 'again' | 'hard' | 'good' | 'easy';
 
-/** 問題のグループ: 基本フレーズ / TOEIC Bridge 単語 */
-export type Deck = 'core' | 'toeic';
+/** 問題のグループ: TOEIC Bridge 単語 / 瞬間英作文 */
+export type Deck = 'word' | 'composition';
 
 /** 単語レベル: 中学 / 高校 */
 export type WordLevel = 'junior' | 'senior';
@@ -27,10 +27,9 @@ export interface Card {
   alternatives?: string[];
   explanation: string;
 
-    /** 省略時は 'core'（基本フレーズ） */
-  deck?: Deck;
-  /** TOEIC Bridge 単語のレベル */
-  level?: WordLevel;
+  deck: Deck;
+  /** レベル（中学 / 高校） */
+  level: WordLevel;
   // ---- SRS の状態 ----
   /** 復習間隔（日） */
   interval: number;
@@ -45,6 +44,16 @@ export interface Card {
   totalAttempts: number;
   totalCorrect: number;
   lastReviewedAt: string | null;
+
+  // ---- 復習リスト ----
+  /** 間違えた・わからなかった回数 */
+  missCount: number;
+  /** 復習リストに入っているか（一度でも間違える / わからない で入る） */
+  inReviewList: boolean;
+  /** 復習リストに入ってからの連続正解数（REVIEW_CLEAR_STREAK に達するとリストから外れる） */
+  reviewStreak: number;
+  /** 最後に間違えた日 (YYYY-MM-DD) */
+  missedAt: string | null;
 }
 
 /** 学習履歴（1回の回答につき1件） */
@@ -64,6 +73,8 @@ export interface ReviewLog {
 
 export interface Stage {
   id: string;
+  deck: Deck;
+  level: WordLevel;
   title: string;
   description: string;
   emoji: string;

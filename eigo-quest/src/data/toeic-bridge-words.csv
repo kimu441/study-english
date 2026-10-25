@@ -119,3 +119,383 @@ senior,よく出る表現,suggest,提案する,I suggest taking a taxi.,タク�
 senior,よく出る表現,perhaps,たぶん,Perhaps he is still at the office.,たぶん彼はまだ会社にいます。
 senior,よく出る表現,instead,代わりに,Let's go by bus instead.,代わりにバスで行きましょう。
 senior,よく出る表現,especially,特に,It is especially cold today.,今日は特に寒いです。
+junior,日常生活,breakfast,朝食,I eat breakfast at seven.,7時に朝食を食べます。
+junior,日常生活,umbrella,かさ,Take an umbrella with you.,かさを持って行きなさい。
+junior,日常生活,key,かぎ,I lost my key.,かぎをなくしました。
+junior,日常生活,floor,階・床,The shop is on the third floor.,その店は3階にあります。
+junior,日常生活,neighbor,近所の人,Our neighbor is very friendly.,近所の人はとても親しみやすいです。
+junior,日常生活,cook,料理する,My father cooks dinner on Sundays.,父は日曜日に夕食を作ります。
+junior,日常生活,sleep,眠る,I usually sleep for seven hours.,ふだん7時間眠ります。
+junior,日常生活,wake,目を覚ます,I woke up early today.,今日は早く目が覚めました。
+junior,日常生活,carry,運ぶ,Can you carry this box?,この箱を運んでくれますか？
+junior,日常生活,throw,投げる・捨てる,Don't throw trash here.,ここにごみを捨てないでください。
+junior,日常生活,trash,ごみ,Please take out the trash.,ごみを出してください。
+junior,日常生活,dish,皿・料理,I washed the dishes after dinner.,夕食後に皿を洗いました。
+junior,日常生活,towel,タオル,Can I use this towel?,このタオルを使ってもいいですか？
+junior,日常生活,mirror,鏡,There is a mirror on the wall.,壁に鏡があります。
+junior,日常生活,phone,電話,My phone is in my bag.,電話はかばんの中にあります。
+junior,日常生活,letter,手紙,I wrote a letter to my friend.,友達に手紙を書きました。
+junior,日常生活,send,送る,I will send you a photo.,写真を送ります。
+junior,日常生活,receive,受け取る,I received a gift from her.,彼女から贈り物を受け取りました。
+junior,日常生活,forget,忘れる,Don't forget your homework.,宿題を忘れないでね。
+junior,日常生活,remember,覚えている,I remember his name.,彼の名前を覚えています。
+junior,学校・勉強,dictionary,辞書,You can use a dictionary.,辞書を使ってもいいです。
+junior,学校・勉強,question,質問,May I ask a question?,質問してもいいですか？
+junior,学校・勉強,test,テスト,We have a math test today.,今日は数学のテストがあります。
+junior,学校・勉強,club,部活動,I am in the tennis club.,テニス部に入っています。
+junior,学校・勉強,teach,教える,Mr. Sato teaches English.,佐藤先生は英語を教えています。
+junior,学校・勉強,learn,学ぶ,We learn many things at school.,私たちは学校で多くのことを学びます。
+junior,学校・勉強,understand,理解する,I can't understand this word.,この単語が理解できません。
+junior,学校・勉強,explain,説明する,Could you explain it again?,もう一度説明してもらえますか？
+junior,学校・勉強,example,例,Here is an example.,これが例です。
+junior,学校・勉強,history,歴史,I am interested in history.,私は歴史に興味があります。
+junior,学校・勉強,science,理科・科学,Science is fun.,理科は楽しいです。
+junior,学校・勉強,easy,簡単な,The test was easy.,テストは簡単でした。
+junior,学校・勉強,mistake,間違い,I made a mistake.,私は間違えました。
+junior,学校・勉強,notebook,ノート,Write it in your notebook.,ノートに書きなさい。
+junior,学校・勉強,blackboard,黒板,Look at the blackboard.,黒板を見なさい。
+junior,学校・勉強,festival,祭り・文化祭,Our school festival is in October.,私たちの文化祭は10月です。
+junior,学校・勉強,speech,スピーチ,She made a speech in English.,彼女は英語でスピーチをしました。
+junior,学校・勉強,team,チーム,Our team won the game.,私たちのチームが試合に勝ちました。
+junior,学校・勉強,member,一員,He is a member of the club.,彼はそのクラブの一員です。
+junior,学校・勉強,grade,学年・成績,She is in the third grade.,彼女は3年生です。
+junior,買い物・食事,vegetable,野菜,Eat more vegetables.,もっと野菜を食べなさい。
+junior,買い物・食事,fruit,果物,I like fruit very much.,果物が大好きです。
+junior,買い物・食事,drink,飲み物・飲む,What would you like to drink?,何をお飲みになりますか？
+junior,買い物・食事,lunch,昼食,Let's have lunch together.,いっしょに昼食を食べましょう。
+junior,買い物・食事,restaurant,レストラン,This restaurant is popular.,このレストランは人気があります。
+junior,買い物・食事,store,店,The store closes at eight.,その店は8時に閉まります。
+junior,買い物・食事,sell,売る,They sell fresh fish.,彼らは新鮮な魚を売っています。
+junior,買い物・食事,buy,買う,I bought a new shirt.,新しいシャツを買いました。
+junior,買い物・食事,money,お金,I don't have much money.,あまりお金を持っていません。
+junior,買い物・食事,size,サイズ,Do you have a smaller size?,もっと小さいサイズはありますか？
+junior,買い物・食事,try,試す,Can I try this on?,これを試着してもいいですか？
+junior,買い物・食事,glass,コップ・ガラス,Can I have a glass of water?,水を1杯もらえますか？
+junior,買い物・食事,bottle,びん,I bought a bottle of juice.,ジュースを1本買いました。
+junior,買い物・食事,favorite,お気に入りの,What is your favorite food?,好きな食べ物は何ですか？
+junior,買い物・食事,fresh,新鮮な,These eggs are fresh.,この卵は新鮮です。
+junior,買い物・食事,salt,塩,Please pass me the salt.,塩を取ってください。
+junior,買い物・食事,sugar,砂糖,I don't take sugar in my coffee.,コーヒーに砂糖は入れません。
+junior,買い物・食事,meal,食事,We had a nice meal.,私たちはすてきな食事をしました。
+junior,買い物・食事,shopping,買い物,Let's go shopping.,買い物に行きましょう。
+junior,買い物・食事,wallet,財布,I left my wallet at home.,財布を家に忘れました。
+junior,交通・場所,station,駅,The station is near my house.,駅は私の家の近くです。
+junior,交通・場所,entrance,入口,Meet me at the main entrance.,正面入口で会いましょう。
+junior,交通・場所,map,地図,Let's look at the map.,地図を見てみましょう。
+junior,交通・場所,street,通り,This street is very busy.,この通りはとても混んでいます。
+junior,交通・場所,park,公園,Children are playing in the park.,子どもたちが公園で遊んでいます。
+junior,交通・場所,bank,銀行,The bank is next to the post office.,銀行は郵便局のとなりです。
+junior,交通・場所,post office,郵便局,Where is the post office?,郵便局はどこですか？
+junior,交通・場所,near,近くに,Is there a hotel near here?,この近くにホテルはありますか？
+junior,交通・場所,turn,曲がる,Turn right at the next corner.,次の角を右に曲がってください。
+junior,交通・場所,cross,渡る,Cross the street carefully.,気をつけて通りを渡りなさい。
+junior,交通・場所,get off,降りる,Get off the bus at the next stop.,次の停留所でバスを降りてください。
+junior,交通・場所,stop,停留所・止まる,The bus stop is over there.,バス停はあそこです。
+junior,交通・場所,miss,乗り遅れる,I missed the last train.,終電に乗り遅れました。
+junior,交通・場所,trip,旅行,We took a trip to Okinawa.,私たちは沖縄へ旅行しました。
+junior,交通・場所,travel,旅行する,I want to travel abroad.,海外に旅行したいです。
+junior,交通・場所,city,都市,Tokyo is a big city.,東京は大きな都市です。
+junior,交通・場所,country,国・いなか,Which country do you want to visit?,どの国を訪れたいですか？
+junior,交通・場所,hotel,ホテル,We stayed at a hotel.,私たちはホテルに泊まりました。
+junior,交通・場所,stay,滞在する,How long will you stay?,どれくらい滞在しますか？
+junior,交通・場所,way,道・方法,Could you tell me the way to the station?,駅への道を教えていただけますか？
+junior,天気・自然,snow,雪,We had a lot of snow.,雪がたくさん降りました。
+junior,天気・自然,warm,暖かい,It's warm today.,今日は暖かいです。
+junior,天気・自然,cool,涼しい,It's cool in the morning.,朝は涼しいです。
+junior,天気・自然,temperature,気温,The temperature is high today.,今日は気温が高いです。
+junior,天気・自然,forest,森,There are many trees in the forest.,森にはたくさんの木があります。
+junior,天気・自然,lake,湖,We went fishing at the lake.,湖へ釣りに行きました。
+junior,天気・自然,sea,海,I like swimming in the sea.,海で泳ぐのが好きです。
+junior,天気・自然,flower,花,These flowers smell nice.,これらの花はいいにおいがします。
+junior,天気・自然,animal,動物,What animal do you like?,何の動物が好きですか？
+junior,天気・自然,earth,地球,The earth is round.,地球は丸いです。
+junior,人・気持ち,happy,うれしい,I am happy to see you.,あなたに会えてうれしいです。
+junior,人・気持ち,sad,悲しい,She looked sad.,彼女は悲しそうに見えました。
+junior,人・気持ち,glad,うれしい,I'm glad you like it.,気に入ってもらえてうれしいです。
+junior,人・気持ち,afraid,恐れて,I am afraid of dogs.,私は犬がこわいです。
+junior,人・気持ち,interested,興味がある,He is interested in music.,彼は音楽に興味があります。
+junior,人・気持ち,popular,人気のある,She is popular at school.,彼女は学校で人気があります。
+junior,人・気持ち,friendly,親しみやすい,The staff are friendly.,スタッフは親しみやすいです。
+junior,人・気持ち,careful,注意深い,Be careful on the stairs.,階段では気をつけて。
+junior,人・気持ち,quiet,静かな,Please be quiet in the library.,図書館では静かにしてください。
+junior,人・気持ち,young,若い,My aunt is young.,おばは若いです。
+junior,人・気持ち,famous,有名な,He is a famous singer.,彼は有名な歌手です。
+junior,人・気持ち,smile,ほほえむ,She smiled at me.,彼女は私にほほえみました。
+junior,人・気持ち,cry,泣く,The baby is crying.,赤ちゃんが泣いています。
+junior,人・気持ち,laugh,笑う,We laughed a lot.,私たちはたくさん笑いました。
+junior,人・気持ち,feel,感じる,How do you feel today?,今日の気分はどうですか？
+junior,人・気持ち,hope,望む,I hope you like it.,気に入ってくれるといいな。
+junior,人・気持ち,wish,願う,I wish you good luck.,幸運を祈ります。
+junior,人・気持ち,believe,信じる,I believe you.,あなたを信じます。
+junior,人・気持ち,cousin,いとこ,My cousin lives in Osaka.,いとこは大阪に住んでいます。
+junior,人・気持ち,guest,招待客,We have three guests tonight.,今夜は3人のお客さんが来ます。
+junior,時間・数,minute,分,Wait a minute please.,少し待ってください。
+junior,時間・数,hour,時間,It takes an hour by car.,車で1時間かかります。
+junior,時間・数,week,週,I see him every week.,毎週彼に会います。
+junior,時間・数,month,月,I will move next month.,来月引っ越します。
+junior,時間・数,early,早く・早い,I got up early this morning.,今朝は早く起きました。
+junior,時間・数,late,遅れた・遅く,Don't be late for school.,学校に遅れないように。
+junior,時間・数,soon,すぐに,The train will come soon.,電車はまもなく来ます。
+junior,時間・数,already,すでに,I have already finished lunch.,もう昼食を終えました。
+junior,時間・数,yet,まだ・もう,Has the bus come yet?,バスはもう来ましたか？
+junior,時間・数,ago,〜前に,I met him two years ago.,2年前に彼に会いました。
+junior,時間・数,during,〜の間に,I slept during the movie.,映画の間に眠ってしまいました。
+junior,時間・数,until,〜までずっと,The shop is open until nine.,その店は9時まで開いています。
+junior,時間・数,half,半分,Cut the cake in half.,ケーキを半分に切って。
+junior,時間・数,quarter,4分の1・15分,It's a quarter past ten.,10時15分です。
+junior,時間・数,dozen,ダース,I bought a dozen eggs.,卵を1ダース買いました。
+junior,時間・数,hundred,100,There are a hundred people here.,ここには100人います。
+junior,時間・数,thousand,1000,It costs two thousand yen.,2000円かかります。
+junior,時間・数,twice,2回,I go to the gym twice a week.,週に2回ジムに行きます。
+junior,時間・数,weekend,週末,What did you do last weekend?,先週末は何をしましたか？
+junior,時間・数,future,未来・将来,What do you want to be in the future?,将来何になりたいですか？
+junior,基本動詞,begin,始まる,The concert begins at six.,コンサートは6時に始まります。
+junior,基本動詞,close,閉める,Please close the door.,ドアを閉めてください。
+junior,基本動詞,open,開ける,The store opens at ten.,店は10時に開きます。
+junior,基本動詞,bring,持ってくる,Please bring your lunch.,お弁当を持ってきてください。
+junior,基本動詞,take,取る・持っていく,Take this map with you.,この地図を持って行って。
+junior,基本動詞,give,与える,He gave me a book.,彼は私に本をくれました。
+junior,基本動詞,show,見せる,Please show me your ticket.,切符を見せてください。
+junior,基本動詞,tell,伝える,Please tell me your name.,お名前を教えてください。
+junior,基本動詞,ask,尋ねる,Can I ask you something?,ちょっと聞いてもいいですか？
+junior,基本動詞,call,電話する,I'll call you tonight.,今夜電話します。
+junior,基本動詞,wait,待つ,Please wait here.,ここで待っていてください。
+junior,基本動詞,help,手伝う,Can you help me?,手伝ってもらえますか？
+junior,基本動詞,use,使う,May I use your phone?,電話を使ってもいいですか？
+junior,基本動詞,need,必要とする,I need some help.,少し助けが必要です。
+junior,基本動詞,want,欲しい,I want a new bike.,新しい自転車が欲しいです。
+junior,基本動詞,decide,決める,I decided to study abroad.,留学することに決めました。
+junior,基本動詞,find,見つける,I can't find my glasses.,めがねが見つかりません。
+junior,基本動詞,lose,失う・負ける,We lost the game.,私たちは試合に負けました。
+junior,基本動詞,win,勝つ,Our team won the match.,私たちのチームが試合に勝ちました。
+junior,基本動詞,build,建てる,They built a new school.,彼らは新しい学校を建てました。
+junior,基本動詞,break,壊す,Who broke the window?,だれが窓を割ったのですか？
+junior,基本動詞,catch,捕まえる,I caught a big fish.,大きな魚を捕まえました。
+junior,基本動詞,choose,選ぶ,Choose one from these.,これらから1つ選んでください。
+junior,基本動詞,grow,育つ・育てる,We grow tomatoes in the garden.,庭でトマトを育てています。
+junior,基本動詞,move,動かす・引っ越す,We moved to Kyoto last year.,昨年京都に引っ越しました。
+junior,基本動詞,return,戻る・返す,Please return the book by Friday.,金曜日までに本を返してください。
+junior,基本動詞,spend,過ごす・使う,I spent the day at home.,その日は家で過ごしました。
+junior,基本動詞,hurry,急ぐ,Hurry up or you'll be late.,急がないと遅れるよ。
+junior,基本動詞,agree,賛成する,I agree with you.,あなたに賛成です。
+junior,基本動詞,introduce,紹介する,Let me introduce myself.,自己紹介させてください。
+junior,基本形容詞・副詞,important,重要な,This is an important meeting.,これは重要な会議です。
+junior,基本形容詞・副詞,different,異なる,My idea is different from yours.,私の考えはあなたのと違います。
+junior,基本形容詞・副詞,same,同じ,We are in the same class.,私たちは同じクラスです。
+junior,基本形容詞・副詞,free,自由な・無料の,Are you free tomorrow?,明日はひまですか？
+junior,基本形容詞・副詞,full,いっぱいの,The bus was full.,バスは満員でした。
+junior,基本形容詞・副詞,empty,空の,The box is empty.,その箱は空っぽです。
+junior,基本形容詞・副詞,heavy,重い,This bag is heavy.,このかばんは重いです。
+junior,基本形容詞・副詞,light,軽い,This jacket is light.,この上着は軽いです。
+junior,基本形容詞・副詞,dangerous,危険な,It's dangerous to swim here.,ここで泳ぐのは危険です。
+junior,基本形容詞・副詞,safe,安全な,This area is safe.,この地域は安全です。
+junior,基本形容詞・副詞,useful,役に立つ,This app is very useful.,このアプリはとても役に立ちます。
+junior,基本形容詞・副詞,strong,強い,The wind is strong today.,今日は風が強いです。
+junior,基本形容詞・副詞,wrong,間違った,I took the wrong bus.,間違ったバスに乗りました。
+junior,基本形容詞・副詞,right,正しい・右,You are right.,あなたの言うとおりです。
+junior,基本形容詞・副詞,sure,確信して,Are you sure?,本当ですか？
+junior,基本形容詞・副詞,again,もう一度,Please say it again.,もう一度言ってください。
+junior,基本形容詞・副詞,always,いつも,She is always kind.,彼女はいつも親切です。
+junior,基本形容詞・副詞,usually,ふだんは,I usually walk to school.,ふだんは歩いて学校へ行きます。
+junior,基本形容詞・副詞,sometimes,ときどき,I sometimes cook dinner.,ときどき夕食を作ります。
+junior,基本形容詞・副詞,together,いっしょに,Let's go together.,いっしょに行きましょう。
+senior,仕事・オフィス,meeting,会議,The meeting starts at two.,会議は2時に始まります。
+senior,仕事・オフィス,deadline,締め切り,The deadline is next Friday.,締め切りは来週の金曜日です。
+senior,仕事・オフィス,staff,職員・スタッフ,All staff must attend.,全職員が出席しなければなりません。
+senior,仕事・オフィス,department,部署,She works in the sales department.,彼女は営業部で働いています。
+senior,仕事・オフィス,client,顧客,We have a meeting with a client.,顧客との打ち合わせがあります。
+senior,仕事・オフィス,salary,給料,He gets a good salary.,彼は良い給料をもらっています。
+senior,仕事・オフィス,hire,雇う,The company will hire new staff.,その会社は新しい職員を雇います。
+senior,仕事・オフィス,apply,応募する,I applied for the job.,その仕事に応募しました。
+senior,仕事・オフィス,interview,面接,I have a job interview tomorrow.,明日、仕事の面接があります。
+senior,仕事・オフィス,experience,経験,Do you have any experience?,何か経験はありますか？
+senior,仕事・オフィス,position,職・地位,She got a new position.,彼女は新しい職に就きました。
+senior,仕事・オフィス,project,計画・事業,We started a new project.,新しいプロジェクトを始めました。
+senior,仕事・オフィス,budget,予算,We have a small budget.,予算が少ないです。
+senior,仕事・オフィス,sales,売上,Sales went up this year.,今年は売上が伸びました。
+senior,仕事・オフィス,copy,コピー・部数,Please make ten copies.,10部コピーしてください。
+senior,仕事・オフィス,printer,プリンター,The printer is out of paper.,プリンターの紙が切れています。
+senior,仕事・オフィス,supervisor,上司・監督者,Ask your supervisor for help.,上司に助けを求めなさい。
+senior,仕事・オフィス,promote,昇進させる,He was promoted to manager.,彼は部長に昇進しました。
+senior,仕事・オフィス,retire,退職する,My father will retire next year.,父は来年退職します。
+senior,仕事・オフィス,conference,会議・協議会,The conference will be held in Osaka.,その会議は大阪で開かれます。
+senior,仕事・オフィス,presentation,発表,She gave a great presentation.,彼女はすばらしい発表をしました。
+senior,仕事・オフィス,organize,準備する・まとめる,He organized the event.,彼がそのイベントを準備しました。
+senior,仕事・オフィス,arrange,手配する,I'll arrange a meeting room.,会議室を手配します。
+senior,仕事・オフィス,confirm,確認する,Please confirm your reservation.,予約を確認してください。
+senior,仕事・オフィス,update,更新する,I updated the file.,ファイルを更新しました。
+senior,仕事・オフィス,handle,処理する,She can handle the problem.,彼女ならその問題を処理できます。
+senior,仕事・オフィス,task,仕事・作業,This task is easy.,この作業は簡単です。
+senior,仕事・オフィス,shift,勤務時間,My shift starts at nine.,私の勤務は9時からです。
+senior,仕事・オフィス,branch,支店,The bank has a branch near here.,その銀行はこの近くに支店があります。
+senior,仕事・オフィス,headquarters,本社,Our headquarters is in Tokyo.,当社の本社は東京にあります。
+senior,旅行・移動,platform,ホーム,The train leaves from platform three.,電車は3番ホームから出ます。
+senior,旅行・移動,fare,運賃,How much is the bus fare?,バスの運賃はいくらですか？
+senior,旅行・移動,passport,パスポート,Please show me your passport.,パスポートを見せてください。
+senior,旅行・移動,arrival,到着,The arrival time is 3 p.m.,到着時刻は午後3時です。
+senior,旅行・移動,abroad,海外に,She studied abroad last year.,彼女は昨年留学しました。
+senior,旅行・移動,sightseeing,観光,We went sightseeing in Kyoto.,京都で観光をしました。
+senior,旅行・移動,tourist,観光客,Many tourists visit this temple.,多くの観光客がこの寺を訪れます。
+senior,旅行・移動,guide,案内人・案内する,The guide showed us around.,ガイドが案内してくれました。
+senior,旅行・移動,crowd,人混み,There was a big crowd at the station.,駅は大混雑でした。
+senior,旅行・移動,traffic,交通（量）,The traffic was heavy this morning.,今朝は交通が混雑していました。
+senior,旅行・移動,transfer,乗り換える,Transfer to the Green Line here.,ここでグリーン線に乗り換えてください。
+senior,旅行・移動,direction,方向,Which direction is the station?,駅はどの方向ですか？
+senior,旅行・移動,distance,距離,What is the distance to the airport?,空港までの距離はどれくらいですか？
+senior,旅行・移動,vehicle,乗り物,No vehicles are allowed here.,ここは車両進入禁止です。
+senior,旅行・移動,parking lot,駐車場,The parking lot is full.,駐車場は満車です。
+senior,旅行・移動,check in,チェックインする,You can check in at two.,2時からチェックインできます。
+senior,旅行・移動,round trip,往復,I'd like a round trip ticket.,往復の切符をお願いします。
+senior,旅行・移動,aisle,通路,I'd like an aisle seat.,通路側の席をお願いします。
+senior,旅行・移動,journey,旅,Have a safe journey.,どうぞ安全な旅を。
+senior,旅行・移動,timetable,時刻表,Check the bus timetable.,バスの時刻表を確認して。
+senior,買い物・サービス,customer service,顧客サービス,Please call customer service.,お客様窓口にお電話ください。
+senior,買い物・サービス,item,品物,This item is on sale.,この品物はセール中です。
+senior,買い物・サービス,order form,注文用紙,Fill out the order form.,注文用紙に記入してください。
+senior,買い物・サービス,sold out,売り切れの,The tickets are sold out.,チケットは売り切れです。
+senior,買い物・サービス,in stock,在庫がある,Is this item in stock?,この商品は在庫がありますか？
+senior,買い物・サービス,brand,銘柄・ブランド,This brand is popular.,このブランドは人気があります。
+senior,買い物・サービス,cashier,レジ係,Pay the cashier please.,レジでお支払いください。
+senior,買い物・サービス,charge,料金・請求する,There is no charge for delivery.,配達料はかかりません。
+senior,買い物・サービス,cost,費用がかかる,How much does it cost?,いくらかかりますか？
+senior,買い物・サービス,afford,〜する余裕がある,I can't afford a new car.,新しい車を買う余裕はありません。
+senior,買い物・サービス,repair,修理する,Can you repair my watch?,私の腕時計を修理できますか？
+senior,買い物・サービス,warranty,保証,The warranty lasts one year.,保証期間は1年です。
+senior,買い物・サービス,payment,支払い,We accept payment by card.,カードでのお支払いを受け付けています。
+senior,買い物・サービス,offer,提供する・申し出る,We offer free Wi-Fi.,無料Wi-Fiを提供しています。
+senior,買い物・サービス,order number,注文番号,What is your order number?,注文番号は何ですか？
+senior,買い物・サービス,package,小包,A package arrived for you.,あなた宛に小包が届きました。
+senior,買い物・サービス,ship,発送する,We will ship it tomorrow.,明日発送します。
+senior,買い物・サービス,complaint,苦情,We received a complaint.,苦情を受けました。
+senior,買い物・サービス,reasonable,手頃な,The price is reasonable.,値段は手頃です。
+senior,買い物・サービス,option,選択肢,There are three options.,選択肢は3つあります。
+senior,学校・イベント,award,賞,She received an award for her work.,彼女は仕事で賞を受けました。
+senior,学校・イベント,ceremony,式典,The ceremony starts at ten.,式典は10時に始まります。
+senior,学校・イベント,exhibition,展示会,There is an art exhibition at the museum.,美術館で展覧会があります。
+senior,学校・イベント,performance,公演・成績,The performance was wonderful.,公演はすばらしかったです。
+senior,学校・イベント,audience,観客,The audience clapped loudly.,観客は大きな拍手を送りました。
+senior,学校・イベント,volunteer,ボランティア,We need more volunteers.,もっとボランティアが必要です。
+senior,学校・イベント,scholarship,奨学金,She won a scholarship.,彼女は奨学金を得ました。
+senior,学校・イベント,semester,学期,The new semester starts in April.,新学期は4月に始まります。
+senior,学校・イベント,application,申込書・応募,Send your application by May 1.,5月1日までに申込書を送ってください。
+senior,学校・イベント,sign up,申し込む,I signed up for the tour.,そのツアーに申し込みました。
+senior,健康・生活,symptom,症状,What are your symptoms?,どんな症状ですか？
+senior,健康・生活,fever,熱,I have a high fever.,高い熱があります。
+senior,健康・生活,headache,頭痛,I have a headache.,頭が痛いです。
+senior,健康・生活,cough,せき,He has a bad cough.,彼はひどいせきをしています。
+senior,健康・生活,clinic,診療所,The clinic is open on Saturdays.,その診療所は土曜日も開いています。
+senior,健康・生活,pharmacy,薬局,There is a pharmacy near the station.,駅の近くに薬局があります。
+senior,健康・生活,healthy,健康な,Eat healthy food.,健康的な食事をとりなさい。
+senior,健康・生活,diet,食事・食生活,A balanced diet is important.,バランスのとれた食事が大切です。
+senior,健康・生活,rest,休息,You need some rest.,あなたには休息が必要です。
+senior,健康・生活,relax,くつろぐ,I relax by listening to music.,音楽を聴いてくつろぎます。
+senior,健康・生活,stress,ストレス,Exercise reduces stress.,運動はストレスを減らします。
+senior,健康・生活,weight,体重,I want to lose weight.,体重を減らしたいです。
+senior,健康・生活,appointment card,診察券,Please bring your appointment card.,診察券をお持ちください。
+senior,健康・生活,emergency,緊急事態,Call 119 in an emergency.,緊急時は119番に電話して。
+senior,健康・生活,electricity,電気,Save electricity.,電気を節約しましょう。
+senior,健康・生活,waste,ごみ・むだにする,Don't waste water.,水をむだにしないで。
+senior,健康・生活,pollution,汚染,Air pollution is a big problem.,大気汚染は大きな問題です。
+senior,健康・生活,energy,エネルギー,Solar energy is clean.,太陽エネルギーはクリーンです。
+senior,健康・生活,daily,毎日の,Walking is part of my daily life.,散歩は私の日課の一部です。
+senior,健康・生活,regular,定期的な,Get regular checkups.,定期的に健康診断を受けなさい。
+senior,よく出る表現,however,しかしながら,"It was rainy. However, we went out.",雨でした。しかし、私たちは出かけました。
+senior,よく出る表現,although,〜だけれども,Although it was late he kept working.,遅かったけれど彼は働き続けました。
+senior,よく出る表現,unless,〜しない限り,Don't call unless it's important.,大事でない限り電話しないで。
+senior,よく出る表現,whether,〜かどうか,I don't know whether he will come.,彼が来るかどうかわかりません。
+senior,よく出る表現,according to,〜によれば,According to the news it will rain.,ニュースによると雨が降るそうです。
+senior,よく出る表現,because of,〜のために,The game was canceled because of rain.,雨のため試合は中止されました。
+senior,よく出る表現,instead of,〜の代わりに,I had tea instead of coffee.,コーヒーの代わりに紅茶を飲みました。
+senior,よく出る表現,in advance,前もって,Please pay in advance.,前払いでお願いします。
+senior,よく出る表現,as soon as,〜するとすぐに,Call me as soon as you arrive.,着いたらすぐに電話して。
+senior,よく出る表現,on time,時間どおりに,The train arrived on time.,電車は時間どおりに着きました。
+senior,よく出る表現,at least,少なくとも,It takes at least an hour.,少なくとも1時間かかります。
+senior,よく出る表現,be able to,〜することができる,You will be able to swim soon.,すぐに泳げるようになりますよ。
+senior,よく出る表現,look forward to,〜を楽しみに待つ,I look forward to seeing you.,お会いできるのを楽しみにしています。
+senior,よく出る表現,take part in,〜に参加する,I took part in the race.,そのレースに参加しました。
+senior,よく出る表現,be in charge of,〜を担当している,She is in charge of sales.,彼女は営業の担当です。
+senior,よく出る表現,fill out,記入する,Please fill out this form.,この用紙に記入してください。
+senior,よく出る表現,pick up,迎えに行く・受け取る,I'll pick you up at the station.,駅まで迎えに行きます。
+senior,よく出る表現,put off,延期する,They put off the meeting.,彼らは会議を延期しました。
+senior,よく出る表現,run out of,〜を切らす,We ran out of milk.,牛乳を切らしました。
+senior,よく出る表現,be supposed to,〜することになっている,The bus is supposed to come at five.,バスは5時に来ることになっています。
+senior,重要動詞,provide,提供する,The hotel provides breakfast.,そのホテルは朝食を提供しています。
+senior,重要動詞,include,含む,The price includes tax.,価格には税が含まれています。
+senior,重要動詞,prepare,準備する,I prepared for the trip.,旅行の準備をしました。
+senior,重要動詞,deliver,配達する,They deliver pizza until midnight.,深夜までピザを配達しています。
+senior,重要動詞,replace,取り替える,We need to replace the light.,電灯を取り替える必要があります。
+senior,重要動詞,remind,思い出させる,Please remind me tomorrow.,明日、私に念を押してください。
+senior,重要動詞,expect,予期する,We expect many visitors.,多くの来場者を見込んでいます。
+senior,重要動詞,allow,許す,Pets are not allowed here.,ここではペットは禁止です。
+senior,重要動詞,avoid,避ける,Avoid the busy roads.,混んでいる道は避けなさい。
+senior,重要動詞,mention,言及する,He mentioned the meeting.,彼は会議について触れました。
+senior,重要動詞,describe,説明する・描写する,Describe the man you saw.,見た男の人の特徴を述べて。
+senior,重要動詞,compare,比べる,Compare the two prices.,2つの値段を比べて。
+senior,重要動詞,complete,完成させる,Complete the form please.,用紙を完成させてください。
+senior,重要動詞,continue,続ける,Please continue reading.,読み続けてください。
+senior,重要動詞,develop,発展させる・開発する,They developed a new app.,彼らは新しいアプリを開発しました。
+senior,重要動詞,establish,設立する,The company was established in 1990.,その会社は1990年に設立されました。
+senior,重要動詞,inform,知らせる,We will inform you by e-mail.,メールでお知らせします。
+senior,重要動詞,notice,気づく,Did you notice the sign?,その標識に気づきましたか？
+senior,重要動詞,predict,予測する,They predict heavy rain.,大雨が予測されています。
+senior,重要動詞,reduce,減らす,We must reduce costs.,費用を減らさなければなりません。
+senior,重要動詞,remove,取り除く,Please remove your shoes.,靴を脱いでください。
+senior,重要動詞,attract,引きつける,The festival attracts many visitors.,その祭りは多くの来場者を引きつけます。
+senior,重要動詞,solve,解決する,We solved the problem.,私たちは問題を解決しました。
+senior,重要動詞,support,支える,Thank you for your support.,ご支援ありがとうございます。
+senior,重要動詞,serve,（料理を）出す,Lunch is served at noon.,昼食は正午に出されます。
+senior,重要動詞,keep,保つ・保管する,Keep it in a cool place.,涼しい場所に保管してください。
+senior,重要動詞,cause,引き起こす,The storm caused damage.,嵐が被害をもたらしました。
+senior,重要動詞,realize,気づく・実現する,I realized my mistake.,自分の間違いに気づきました。
+senior,重要動詞,share,共有する,Let's share the cost.,費用を分け合いましょう。
+senior,重要動詞,encourage,励ます,My teacher encouraged me.,先生が私を励ましてくれました。
+senior,重要形容詞,several,いくつかの,I have several questions.,いくつか質問があります。
+senior,重要形容詞,recent,最近の,This is a recent photo.,これは最近の写真です。
+senior,重要形容詞,local,地元の,We buy local vegetables.,地元の野菜を買います。
+senior,重要形容詞,public,公共の,This is a public library.,ここは公立図書館です。
+senior,重要形容詞,private,私的な,This is a private room.,ここは個室です。
+senior,重要形容詞,international,国際的な,This is an international airport.,ここは国際空港です。
+senior,重要形容詞,traditional,伝統的な,This is a traditional dish.,これは伝統料理です。
+senior,重要形容詞,official,公式の,Check the official website.,公式ウェブサイトを確認してください。
+senior,重要形容詞,additional,追加の,There is an additional fee.,追加料金があります。
+senior,重要形容詞,current,現在の,What is your current address?,現住所はどこですか？
+senior,重要形容詞,previous,前の,The previous owner lived here.,前の持ち主がここに住んでいました。
+senior,重要形容詞,certain,確かな・ある,I'm certain about it.,それについては確信しています。
+senior,重要形容詞,similar,似ている,Our ideas are similar.,私たちの考えは似ています。
+senior,重要形容詞,efficient,効率的な,This machine is efficient.,この機械は効率的です。
+senior,重要形容詞,responsible,責任がある,Who is responsible for this?,これはだれの責任ですか？
+senior,重要形容詞,possible,可能な,Is it possible to change the date?,日付を変更することは可能ですか？
+senior,重要形容詞,impossible,不可能な,It's impossible to finish today.,今日終わらせるのは不可能です。
+senior,重要形容詞,excellent,優れた,The food was excellent.,料理はすばらしかったです。
+senior,重要形容詞,serious,深刻な・真剣な,This is a serious problem.,これは深刻な問題です。
+senior,重要形容詞,annual,毎年の,The annual meeting is in June.,年次会議は6月です。
+senior,電話・メール・お知らせ,message,伝言,Can I leave a message?,伝言をお願いできますか？
+senior,電話・メール・お知らせ,attach,添付する,I attached the file to the e-mail.,メールにファイルを添付しました。
+senior,電話・メール・お知らせ,reply,返事をする,Please reply by tomorrow.,明日までに返事をください。
+senior,電話・メール・お知らせ,contact,連絡する,Please contact us anytime.,いつでもご連絡ください。
+senior,電話・メール・お知らせ,hold,（電話を）切らずに待つ,Please hold for a moment.,少々お待ちください。
+senior,電話・メール・お知らせ,extension,内線,Call extension 205.,内線205番におかけください。
+senior,電話・メール・お知らせ,notice board,掲示板,Look at the notice board.,掲示板を見てください。
+senior,電話・メール・お知らせ,attention,注意,May I have your attention please?,皆さま、お知らせいたします。
+senior,電話・メール・お知らせ,ladies and gentlemen,皆さま,Ladies and gentlemen welcome aboard.,皆さま、ご搭乗ありがとうございます。
+senior,電話・メール・お知らせ,closed,閉店した・休業の,The store is closed today.,その店は本日休業です。
+senior,電話・メール・お知らせ,temporarily,一時的に,The elevator is temporarily out of order.,エレベーターは一時的に故障中です。
+senior,電話・メール・お知らせ,out of order,故障中,This machine is out of order.,この機械は故障中です。
+senior,電話・メール・お知らせ,construction,工事,The road is under construction.,その道路は工事中です。
+senior,電話・メール・お知らせ,entrance fee,入場料,The entrance fee is 500 yen.,入場料は500円です。
+senior,電話・メール・お知らせ,admission,入場（料）,Admission is free for children.,子どもは入場無料です。
+senior,電話・メール・お知らせ,inconvenience,不便,We are sorry for the inconvenience.,ご不便をおかけして申し訳ありません。
+senior,電話・メール・お知らせ,postpone,延期する,The event was postponed.,そのイベントは延期されました。
+senior,電話・メール・お知らせ,detail,詳細,See the website for details.,詳細はウェブサイトをご覧ください。
+senior,電話・メール・お知らせ,in person,直接・自分で,Please apply in person.,ご本人が直接お申し込みください。
+senior,電話・メール・お知らせ,notify,通知する,We will notify you of any changes.,変更があればお知らせします。
+senior,住まい・地域,apartment,アパート,I live in a small apartment.,小さなアパートに住んでいます。
+senior,住まい・地域,rent,家賃・賃借する,The rent is 70000 yen a month.,家賃は月7万円です。
+senior,住まい・地域,resident,住民,Residents can use the gym.,住民はジムを利用できます。
+senior,住まい・地域,community,地域社会,This is a friendly community.,ここは親しみやすい地域です。
+senior,住まい・地域,facility,施設,The facility is open to everyone.,その施設はだれでも利用できます。
+senior,住まい・地域,furniture,家具,We bought new furniture.,新しい家具を買いました。
+senior,住まい・地域,neighborhood,近所,This neighborhood is quiet.,この近所は静かです。
+senior,住まい・地域,downtown,繁華街に,Let's go downtown.,繁華街に行きましょう。
+senior,住まい・地域,suburb,郊外,They live in the suburbs.,彼らは郊外に住んでいます。
+senior,住まい・地域,landlord,家主,Call the landlord about the leak.,水漏れについて家主に電話して。

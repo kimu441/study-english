@@ -116,4 +116,8 @@ export const initialSrsState = () => ({
   totalAttempts: 0,
   totalCorrect: 0,
   lastReviewedAt: null as string | null,
+  missCount: 0,
+  inReviewList: false,
+  reviewStreak: 0,
+  missedAt: null as string | null,
 });

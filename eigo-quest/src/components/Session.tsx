@@ -1,19 +1,25 @@
 import { useMemo, useRef, useState } from 'react';
-import { Check, Trophy, Volume2, VolumeX, X, Zap, Target } from 'lucide-react';
+import { BookmarkPlus, Check, Eye, Trophy, Volume2, VolumeX, X, Zap, Target } from 'lucide-react';
 import type { Card, Rating } from '../types';
 import { RATING_LABEL, calcXp, formatInterval, previewInterval } from '../lib/srs';
 import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../lib/session';
-import { isSoundOn, setSoundOn, sfx } from '../lib/sound';
-import { LEVEL_LABEL, WORD_DIRECTION } from '../data/toeicBridge';
+import { isSoundOn, setSoundOn, sfx, speak } from '../lib/sound';
+import { LEVEL_LABEL, WORD_DIRECTION } from '../data/decks';
+import { REVIEW_CLEAR_STREAK } from '../lib/review';
+
+/** 瞬間英作文の解答方法: 入力 / 口頭（答えを見て自己判定） */
+export type ComposeMode = 'type' | 'oral';
 
 interface Props {
   items: SessionItem[];
   allCards: Card[];
   onRecord: (cardId: string, rating: Rating, answeredCorrectly: boolean) => void;
   onExit: () => void;
+  composeMode?: ComposeMode;
 }
 
 const REASON: Record<SessionReason, { label: string; cls: string }> = {
+  review: { label: '復習リスト', cls: 'bg-rose-100 text-rose-600' },
   weak: { label: '苦手', cls: 'bg-red-100 text-red-600' },
   due: { label: '復習日', cls: 'bg-amber-100 text-amber-600' },
   new: { label: '新出', cls: 'bg-sky-100 text-sky-600' },
@@ -27,34 +33,26 @@ const RATING_STYLE: Record<Rating, string> = {
   easy: 'bg-green-500 border-green-700',
 };
 
-function speak(text: string) {
-  try {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  } catch {
-    /* 非対応環境は無視 */
-  }
-}
-
-export default function Session({ items, allCards, onRecord, onExit }: Props) {
+export default function Session({ items, allCards, onRecord, onExit, composeMode = 'type' }: Props) {
   const [queue, setQueue] = useState<SessionItem[]>(items);
   const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<'ask' | 'review' | 'done'>('ask');
+  // reveal: 口頭モードで答えを見て、言えたかどうかを自己判定する段階
+  const [phase, setPhase] = useState<'ask' | 'reveal' | 'review' | 'done'>('ask');
   const [selected, setSelected] = useState<string | null>(null);
   const [input, setInput] = useState('');
   const [correct, setCorrect] = useState<boolean | null>(null);
-  const [result, setResult] = useState({ xp: 0, correct: 0, total: 0 });
+  const [result, setResult] = useState({ xp: 0, correct: 0, total: 0, added: 0 });
   const [sound, setSound] = useState(isSoundOn());
   const requeued = useRef(new Set<string>());
 
   const item = queue[index];
   const card = item ? (allCards.find((c) => c.id === item.card.id) ?? item.card) : null;
 
-  // TOEIC Bridge 単語は出題の向きを切り替え可能（英→日 / 日→英）。基本フレーズは常に 日→英
+  const oral = card?.type === 'speaking' && composeMode === 'oral';
+
+  // 単語は出題の向きを切り替え可能（英→日 / 日→英）。瞬間英作文は常に 日→英
   const reverse = useMemo(() => {
-    if (!card || card.type !== 'vocab' || card.deck !== 'toeic') return false;
+    if (!card || card.type !== 'vocab') return false;
     if (WORD_DIRECTION === 'en-ja') return true;
     if (WORD_DIRECTION === 'ja-en') return false;
     return Math.random() < 0.5;
@@ -67,10 +65,7 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
   const choices = useMemo(() => {
     if (!card || card.type !== 'vocab') return [];
     const text = (c: Card) => (reverse ? c.prompt : c.answer);
-    const deck = card.deck ?? 'core';
-    const pool = allCards.filter(
-      (c) => c.type === 'vocab' && (c.deck ?? 'core') === deck && text(c) !== correctText,
-    );
+    const pool = allCards.filter((c) => c.type === 'vocab' && text(c) !== correctText);
     // 同じステージの単語を優先して、紛らわしい選択肢にする
     const same = shuffle(pool.filter((c) => c.stageId === card.stageId));
     const rest = shuffle(pool.filter((c) => c.stageId !== card.stageId));
@@ -81,26 +76,37 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
 
   const canCheck = card?.type === 'vocab' ? selected !== null : input.trim().length > 0;
 
+  const judge = (ok: boolean) => {
+    setCorrect(ok);
+    setPhase('review');
+    ok ? sfx.correct() : sfx.wrong();
+  };
+
   const check = (skip = false) => {
     if (!card || phase !== 'ask') return;
+    if (oral && !skip) {
+      setPhase('reveal');
+      sfx.tap();
+      return;
+    }
     const ok = skip
       ? false
       : card.type === 'vocab'
         ? selected === correctText
         : isAnswerCorrect(card, input);
-    setCorrect(ok);
-    setPhase('review');
-    ok ? sfx.correct() : sfx.wrong();
+    judge(ok);
   };
 
   const rate = (rating: Rating) => {
     if (!item || !card || correct === null) return;
     onRecord(card.id, rating, correct);
     sfx.tap();
+    const missed = !correct || rating === 'again';
     setResult((r) => ({
       xp: r.xp + calcXp(rating, correct),
       correct: r.correct + (correct ? 1 : 0),
       total: r.total + 1,
+      added: r.added + (missed && !card.inReviewList ? 1 : 0),
     }));
 
     let nextQueue = queue;
@@ -153,6 +159,12 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
             </div>
           </div>
         </div>
+        {result.added > 0 && (
+          <p className="mt-5 flex items-center gap-1.5 rounded-2xl bg-rose-50 px-4 py-2 text-sm font-extrabold text-rose-600">
+            <BookmarkPlus className="h-5 w-5" />
+            {result.added}問を復習リストに追加しました
+          </p>
+        )}
         <button
           onClick={onExit}
           className="mt-10 w-full max-w-sm rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white active:translate-y-0.5 active:border-b-2"
@@ -166,6 +178,7 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
   if (!card || !item) return null;
   const reason = REASON[item.reason];
   const progress = ((index + (phase === 'review' ? 1 : 0)) / queue.length) * 100;
+  const answers = [card.answer, ...(card.alternatives ?? [])];
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white">
@@ -195,14 +208,14 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
       <div className="mx-auto w-full max-w-xl flex-1 overflow-y-auto px-4 pb-72">
         <div className="mb-3 flex items-center gap-2">
           <span className={`rounded-full px-3 py-1 text-xs font-black ${reason.cls}`}>{reason.label}</span>
-          {card.level && (
-            <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-black text-purple-600">
-              {LEVEL_LABEL[card.level]}
-            </span>
+          <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-black text-purple-600">
+            {LEVEL_LABEL[card.level]}
+          </span>
+          {card.inReviewList && item.reason !== 'review' && (
+            <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-600">復習リスト</span>
           )}
-          <span className="text-xs font-extrabold text-slate-400">
-            {card.deck === 'toeic' ? 'TOEIC Bridge 単語' : card.type === 'vocab' ? '英単語' : '瞬間英作文'}・
-            {card.category}
+          <span className="truncate text-xs font-extrabold text-slate-400">
+            {card.deck === 'word' ? 'TOEIC Bridge 単語' : '瞬間英作文'}・{card.category}
           </span>
         </div>
         <h2 className="mb-5 text-xl font-black text-slate-700">
@@ -210,7 +223,9 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
             ? reverse
               ? '日本語の意味はどれ？'
               : '英語で正しいのはどれ？'
-            : '英語にしてみよう'}
+            : oral
+              ? '英語で言ってみよう（声に出して）'
+              : '英語にしてみよう'}
         </h2>
 
         <div
@@ -259,6 +274,17 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
               );
             })}
           </div>
+        ) : oral ? (
+          phase === 'ask' ? (
+            <p className="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-500">
+              すぐに英語で言ってから「答えを見る」を押してください。
+            </p>
+          ) : (
+            <div className="rounded-2xl border-2 border-sky-300 bg-sky-50 p-4">
+              <div className="text-xs font-extrabold text-sky-500">答え</div>
+              <div className="mt-1 text-lg font-extrabold text-sky-700">{card.answer}</div>
+            </div>
+          )
         ) : (
           <textarea
             autoFocus
@@ -299,11 +325,41 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
             </button>
             <button
               onClick={() => check()}
-              disabled={!canCheck}
+              disabled={!oral && !canCheck}
               className="flex-1 rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white transition active:translate-y-0.5 active:border-b-2 disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-400"
             >
-              チェック
+              {oral ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  答えを見る
+                </span>
+              ) : (
+                'チェック'
+              )}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* 下部: 口頭モードの自己判定 */}
+      {phase === 'reveal' && (
+        <div className="fixed inset-x-0 bottom-0 animate-slide-up border-t-2 border-slate-200 bg-white p-4 pb-6">
+          <div className="mx-auto max-w-xl">
+            <div className="mb-2 text-xs font-extrabold text-slate-500">正しく言えた？（だいたい同じ意味ならOK）</div>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => judge(false)}
+                className="rounded-2xl border-b-4 border-red-700 bg-red-500 py-3.5 text-lg font-black text-white active:translate-y-0.5 active:border-b-2"
+              >
+                言えなかった
+              </button>
+              <button
+                onClick={() => judge(true)}
+                className="rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white active:translate-y-0.5 active:border-b-2"
+              >
+                言えた
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -324,12 +380,29 @@ export default function Session({ items, allCards, onRecord, onExit }: Props) {
             </div>
             <div className={`mt-2 flex items-center gap-2 text-lg font-extrabold ${correct ? 'text-green-700' : 'text-red-700'}`}>
               {card.answer}
-              {card.deck === 'toeic' && <span className="text-base font-bold opacity-80">（{card.prompt}）</span>}
+              {card.deck === 'word' && <span className="text-base font-bold opacity-80">（{card.prompt}）</span>}
               <button onClick={() => speak(card.answer)} className="rounded-full p-1.5 hover:bg-white/60" aria-label="発音を聞く">
                 <Volume2 className="h-5 w-5" />
               </button>
             </div>
+            {answers.length > 1 && (
+              <p className={`mt-1 text-sm font-bold ${correct ? 'text-green-700/80' : 'text-red-700/80'}`}>
+                別解：{answers.slice(1, 4).join(' / ')}
+              </p>
+            )}
             <p className={`mt-1 text-sm font-bold ${correct ? 'text-green-700/80' : 'text-red-700/80'}`}>{card.explanation}</p>
+            {!correct ? (
+              <p className="mt-2 flex items-center gap-1 text-xs font-extrabold text-rose-600">
+                <BookmarkPlus className="h-4 w-4" />
+                復習リストに追加されます
+              </p>
+            ) : (
+              card.inReviewList && (
+                <p className="mt-2 text-xs font-extrabold text-green-700">
+                  復習リスト：連続正解 {card.reviewStreak + 1} / {REVIEW_CLEAR_STREAK}（{REVIEW_CLEAR_STREAK}回でリストから外れます）
+                </p>
+              )
+            )}
 
             <div className="mb-2 mt-4 text-xs font-extrabold text-slate-500">どれくらい覚えていた？</div>
             <div className="grid grid-cols-4 gap-2">

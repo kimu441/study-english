@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { AppData, Card, Rating, ReviewLog } from '../types';
-import { createInitialCards } from '../data/mockData';
-import { calcNextReview, calcXp, todayStr } from './srs';
+import { createInitialCards } from '../data/decks';
+import { calcNextReview, calcXp, initialSrsState, todayStr } from './srs';
+import { applyReviewResult } from './review';
 import { generateDemoData } from './demo';
 
 const KEY = 'eigo-quest:v1';
+
+/** 保存データから引き継ぐ学習状態のキー（SRS + 復習リスト） */
+const PROGRESS_KEYS = Object.keys(initialSrsState()) as (keyof ReturnType<typeof initialSrsState>)[];
 
 function load(): AppData {
   const seed = createInitialCards();
@@ -13,24 +17,14 @@ function load(): AppData {
     if (raw) {
       const parsed = JSON.parse(raw) as AppData;
       if (parsed?.version === 1 && Array.isArray(parsed.cards) && Array.isArray(parsed.logs)) {
-        // 新しく追加された問題があれば取り込む
         const existing = new Map(parsed.cards.map((c) => [c.id, c]));
-              // 問題の内容は最新のデータ(seed)を使い、学習の進み具合(SRS状態)だけ保存データから引き継ぐ
+        // 問題の内容は最新のデータ(seed)を使い、学習の進み具合だけ保存データから引き継ぐ。
+        // 古い保存データに無い項目（復習リストなど）は初期値のまま。
         const merged = seed.map((s) => {
-          const e = existing.get(s.id);
-          return e
-            ? {
-                ...s,
-                interval: e.interval,
-                easeFactor: e.easeFactor,
-                repetitions: e.repetitions,
-                nextReviewDate: e.nextReviewDate,
-                lapses: e.lapses,
-                totalAttempts: e.totalAttempts,
-                totalCorrect: e.totalCorrect,
-                lastReviewedAt: e.lastReviewedAt,
-              }
-            : s;
+          const e = existing.get(s.id) as Partial<Card> | undefined;
+          if (!e) return s;
+          const progress = Object.fromEntries(PROGRESS_KEYS.map((k) => [k, e[k] ?? s[k]]));
+          return { ...s, ...progress } as Card;
         });
         return { version: 1, cards: merged, logs: parsed.logs };
       }
@@ -52,17 +46,22 @@ export function useStore() {
     }
   }, [data]);
 
-  /** 1回答を記録: SRS更新 + 履歴追加 */
+  /** 1回答を記録: SRS更新 + 復習リスト更新 + 履歴追加 */
   const answerCard = useCallback((cardId: string, rating: Rating, answeredCorrectly: boolean) => {
     setData((prev) => {
       const today = todayStr();
       const card = prev.cards.find((c) => c.id === cardId);
       if (!card) return prev;
-      const next: Card = {
-        ...calcNextReview(card, rating, today),
-        totalAttempts: card.totalAttempts + 1,
-        totalCorrect: card.totalCorrect + (answeredCorrectly ? 1 : 0),
-      };
+      const next: Card = applyReviewResult(
+        {
+          ...calcNextReview(card, rating, today),
+          totalAttempts: card.totalAttempts + 1,
+          totalCorrect: card.totalCorrect + (answeredCorrectly ? 1 : 0),
+        },
+        rating,
+        answeredCorrectly,
+        today,
+      );
       const log: ReviewLog = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         cardId,
@@ -78,8 +77,16 @@ export function useStore() {
     });
   }, []);
 
+  /** 復習リストから手動で外す */
+  const removeFromReview = useCallback((cardId: string) => {
+    setData((prev) => ({
+      ...prev,
+      cards: prev.cards.map((c) => (c.id === cardId ? { ...c, inReviewList: false, reviewStreak: 0 } : c)),
+    }));
+  }, []);
+
   const reset = useCallback(() => setData({ version: 1, cards: createInitialCards(), logs: [] }), []);
   const loadDemo = useCallback(() => setData(generateDemoData()), []);
 
-  return { cards: data.cards, logs: data.logs, answerCard, reset, loadDemo };
+  return { cards: data.cards, logs: data.logs, answerCard, removeFromReview, reset, loadDemo };
 }

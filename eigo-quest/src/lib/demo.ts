@@ -1,16 +1,15 @@
 import type { AppData, Rating, ReviewLog } from '../types';
-import { createInitialCards } from '../data/mockData';
+import { createInitialCards } from '../data/decks';
 import { addDays, calcXp, todayStr } from './srs';
 
 /** ダッシュボードの見た目確認用デモデータ */
 export function generateDemoData(): AppData {
   const today = todayStr();
-    const all = createInitialCards();
-  const coreCount = all.filter((c) => c.deck !== 'toeic').length;
-  const cards = all.map((c, i) => {
-    const k = c.deck === 'toeic' ? i - coreCount : i;
-    // 基本フレーズは先頭15問、TOEIC Bridge 単語は先頭30語を学習済みにする
-    if (k >= (c.deck === 'toeic' ? 30 : 15)) return c;
+  const seen: Record<string, number> = { word: 0, composition: 0 };
+  const cards = createInitialCards().map((c, i) => {
+    // 単語は先頭30語、瞬間英作文は先頭15文を学習済みにする
+    const k = seen[c.deck]++;
+    if (k >= (c.deck === 'word' ? 30 : 15)) return c;
     const attempts = 3 + (i % 5);
     const wrong = i % 4 === 1 ? 2 : i % 4 === 2 ? 1 : 0;
     const mastered = i % 5 === 4;
@@ -25,6 +24,10 @@ export function generateDemoData(): AppData {
       totalCorrect: attempts - wrong,
       lastReviewedAt: addDays(today, -1),
       nextReviewDate: i % 3 === 0 ? addDays(today, -(i % 2)) : addDays(today, (i % 6) + 1),
+      missCount: wrong,
+      inReviewList: wrong > 0,
+      reviewStreak: wrong > 0 ? i % 3 : 0,
+      missedAt: wrong > 0 ? addDays(today, -(i % 7)) : null,
     };
   });
 

@@ -23,7 +23,7 @@ export default function ReviewWidget({ dueCount, weakCount, onStart }: Props) {
         </div>
         <div className="min-w-0 flex-1">
           <h2 className="text-xl font-black leading-tight">
-            {done ? '今日の復習は完了！' : '今日の復習があります'}
+            {done ? '今日の復習は完了！' : '今日が復習日の問題があります'}
           </h2>
           <p className="mt-1 flex items-center gap-1 text-sm font-bold text-white/85">
             <Target className="h-4 w-4" />

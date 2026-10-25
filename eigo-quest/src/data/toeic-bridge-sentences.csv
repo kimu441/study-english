@@ -1,0 +1,133 @@
+level,category,japanese,english,alternatives,explanation
+# 瞬間英作文（TOEIC Bridge 対策）。alternatives は | 区切りの別解。
+junior,現在形・be動詞,私は毎朝電車で通勤します。,I go to work by train every morning.,I commute by train every morning.|I take the train to work every morning.,習慣は現在形。「〜で」の交通手段は by + 乗り物（冠詞なし）。
+junior,現在形・be動詞,その店は午前10時に開きます。,The store opens at 10 a.m.,The shop opens at 10 a.m.|The store opens at ten a.m.|The store opens at 10.,営業時間など決まっている事実は現在形。主語が三人称単数なので opens。
+junior,現在形・be動詞,彼女は営業部で働いています。,She works in the sales department.,She works in sales.|She works in the sales section.,職場を表す「〜で働く」は work in / at / for。
+junior,現在形・be動詞,会議室は2階にあります。,The meeting room is on the second floor.,The conference room is on the second floor.,「〜階に」は on the 序数 floor。
+junior,現在形・be動詞,このバスは空港に行きますか？,Does this bus go to the airport?,Is this bus going to the airport?,行き先の確認は Does + 乗り物 + go to 〜? が定番。
+junior,現在形・be動詞,私はふだん7時に起きます。,I usually get up at seven.,I usually wake up at seven.|I usually get up at 7.,頻度の副詞 usually は一般動詞の前に置く。
+junior,現在形・be動詞,駅はここから遠くありません。,The station is not far from here.,The station isn't far from here.,「〜から遠い」は far from 〜。
+junior,現在形・be動詞,あなたの電話番号は何番ですか？,What is your phone number?,What's your phone number?|What is your telephone number?,TOEIC Bridge の会話問題でよく出る質問。
+junior,過去形,私は昨日その書類を送りました。,I sent the document yesterday.,I sent the documents yesterday.,send の過去形は sent。yesterday は文末が自然。
+junior,過去形,電車は10分遅れました。,The train was ten minutes late.,The train was 10 minutes late.|The train was delayed for ten minutes.|The train was delayed by ten minutes.,「〜分遅れる」は be + 時間 + late。delay を使うなら受け身。
+junior,過去形,私たちは先週末にその博物館を訪れました。,We visited the museum last weekend.,We went to the museum last weekend.,last weekend など過去の時を表す語には前置詞をつけない。
+junior,過去形,彼は会議に来ませんでした。,He didn't come to the meeting.,He did not come to the meeting.,過去の否定は didn't + 動詞の原形。
+junior,過去形,昨日はとても忙しかったです。,I was very busy yesterday.,I was really busy yesterday.,be動詞の過去形 was / were。
+junior,過去形,昨夜はどこで夕食を食べましたか？,Where did you have dinner last night?,Where did you eat dinner last night?,過去の疑問文は did + 主語 + 原形。
+junior,過去形,私は駅でかさをなくしました。,I lost my umbrella at the station.,I left my umbrella at the station.,lose の過去形は lost。「置き忘れる」なら leave → left。
+junior,過去形,その映画は何時に始まりましたか？,What time did the movie start?,When did the movie start?|What time did the movie begin?,What time + did + 主語 + 原形?
+junior,未来,明日あなたに電話します。,I'll call you tomorrow.,I will call you tomorrow.,その場で決めた意志は will。I'll は I will の短縮形。
+junior,未来,来月東京へ出張する予定です。,I'm going to go to Tokyo on business next month.,I am going to go to Tokyo on business next month.|I'm going to Tokyo on business next month.|I'm going on a business trip to Tokyo next month.,前から決めている予定は be going to。on business =「仕事で」。
+junior,未来,今夜は雨が降るでしょう。,It will rain tonight.,It's going to rain tonight.|It is going to rain tonight.,天気は It を主語にする。
+junior,未来,会議は3時に始まります。,The meeting will start at three.,The meeting starts at three.|The meeting will begin at three.|The meeting will start at 3.,予定された行事は現在形でも表せる。
+junior,未来,週末は何をするつもりですか？,What are you going to do this weekend?,What will you do this weekend?|What are you doing this weekend?,週末の予定を尋ねる定番表現。
+junior,未来,私が窓を開けましょう。,I'll open the window.,I will open the window.,申し出の I'll 〜。Shall I open the window? も可。
+junior,未来,彼は来週戻ってきます。,He will be back next week.,He'll be back next week.|He will come back next week.,be back =「戻ってくる」。電話応対でもよく使う。
+junior,未来,バスはまもなく到着します。,The bus will arrive soon.,The bus will be here soon.|The bus is arriving soon.,soon =「まもなく」。アナウンスの定番。
+junior,進行形,今、昼食を食べているところです。,I'm having lunch now.,I am having lunch now.|I'm eating lunch now.|I am eating lunch now.,今まさにしていることは現在進行形 be + 動詞ing。
+junior,進行形,彼は電話中です。,He is on the phone.,He's on the phone.|He is talking on the phone.,on the phone =「電話中で」。
+junior,進行形,何をしているのですか？,What are you doing?,,現在進行形の疑問文。
+junior,進行形,私が電話したとき彼女は料理をしていました。,She was cooking when I called.,She was cooking when I called her.|When I called she was cooking.,過去進行形 was / were + 動詞ing。
+junior,進行形,私たちは新しい事務所を探しています。,We are looking for a new office.,We're looking for a new office.,look for =「〜を探す」。
+junior,進行形,男性が箱を運んでいます。,A man is carrying a box.,The man is carrying a box.,写真描写問題で頻出の形。
+junior,進行形,女性たちがテーブルを囲んで座っています。,The women are sitting around a table.,Women are sitting around a table.|The women are sitting around the table.,around 〜 =「〜の周りに」。写真描写の定番。
+junior,進行形,雨が降り始めています。,It's starting to rain.,It is starting to rain.|It's beginning to rain.|It is beginning to rain.,start to 〜 / start 〜ing どちらも可。
+junior,助動詞・依頼,窓を開けてもいいですか？,May I open the window?,Can I open the window?,許可を求める May I 〜? は Can I 〜? より丁寧。
+junior,助動詞・依頼,手伝ってもらえますか？,Can you help me?,Could you help me?|Will you help me?,依頼の Can you 〜?。Could you 〜? はより丁寧。
+junior,助動詞・依頼,ここで写真を撮ってはいけません。,You must not take pictures here.,You can't take pictures here.|You cannot take pictures here.|You must not take photos here.|You mustn't take pictures here.,must not =「〜してはいけない」（禁止）。
+junior,助動詞・依頼,明日早く来なければなりません。,I have to come early tomorrow.,I must come early tomorrow.|I need to come early tomorrow.,have to =「〜しなければならない」。
+junior,助動詞・依頼,急ぐ必要はありません。,You don't have to hurry.,You do not have to hurry.|You don't need to hurry.|There's no need to hurry.,don't have to =「〜する必要はない」。must not との違いに注意。
+junior,助動詞・依頼,いっしょに昼食を食べませんか？,Shall we have lunch together?,Why don't we have lunch together?|Let's have lunch together.|Would you like to have lunch together?,Shall we 〜? / Why don't we 〜? =「〜しませんか」。
+junior,助動詞・依頼,もう少しゆっくり話していただけますか？,Could you speak more slowly?,Could you speak a little more slowly?|Can you speak more slowly?,Could you 〜? は丁寧な依頼。
+junior,助動詞・依頼,コーヒーをいかがですか？,Would you like some coffee?,Would you like a cup of coffee?|Do you want some coffee?,Would you like 〜? =「〜はいかがですか」。勧めるときは some。
+junior,助動詞・依頼,傘を持って行ったほうがいいですよ。,You should take an umbrella.,You should bring an umbrella.|You'd better take an umbrella.,should =「〜したほうがいい」。
+junior,助動詞・依頼,彼は英語を話すことができます。,He can speak English.,He is able to speak English.,can + 動詞の原形。
+junior,比較,このかばんはあれより軽いです。,This bag is lighter than that one.,This bag is lighter than that.,比較級 -er + than。one は bag の繰り返しを避ける代名詞。
+junior,比較,これは店でいちばん人気のある商品です。,This is the most popular item in the store.,This is the most popular product in the store.|This is the most popular item in the shop.,長い形容詞の最上級は the most 〜。
+junior,比較,バスは電車より安いです。,The bus is cheaper than the train.,Taking the bus is cheaper than taking the train.,cheap → cheaper。
+junior,比較,今日は昨日ほど寒くありません。,It's not as cold today as yesterday.,It is not as cold today as yesterday.|It isn't as cold today as it was yesterday.|Today is not as cold as yesterday.|It's not as cold today as it was yesterday.,not as 〜 as … =「…ほど〜ない」。
+junior,比較,もっと大きいサイズはありますか？,Do you have a larger size?,Do you have a bigger size?|Do you have this in a larger size?|Do you have this in a bigger size?,店での定番表現。large → larger。
+junior,比較,彼はチームでいちばん背が高いです。,He is the tallest in the team.,He's the tallest on the team.|He is the tallest on the team.|He's the tallest in the team.,最上級 the -est。in / on the team。
+junior,比較,私はコーヒーより紅茶のほうが好きです。,I like tea better than coffee.,I prefer tea to coffee.|I like tea more than coffee.,like A better than B =「BよりAが好き」。
+junior,比較,できるだけ早く返事をください。,Please reply as soon as possible.,Please answer as soon as possible.|Please reply as soon as you can.,as 〜 as possible =「できるだけ〜」。ビジネスメールの定番。
+junior,不定詞・動名詞,私は海外で働きたいです。,I want to work abroad.,I'd like to work abroad.|I would like to work abroad.,want to 〜 =「〜したい」。abroad は副詞なので to は不要。
+junior,不定詞・動名詞,切符を買うために駅へ行きました。,I went to the station to buy a ticket.,I went to the station to buy tickets.,目的を表す to 不定詞「〜するために」。
+junior,不定詞・動名詞,英語を話すのは楽しいです。,Speaking English is fun.,It's fun to speak English.|It is fun to speak English.,動名詞の主語。It is 〜 to … の形も可。
+junior,不定詞・動名詞,雨がやみました。,It stopped raining.,The rain stopped.|It has stopped raining.,stop 〜ing =「〜するのをやめる」。
+junior,不定詞・動名詞,私は読書が好きです。,I like reading.,I like to read.|I like reading books.,like 〜ing / like to 〜 どちらも可。
+junior,不定詞・動名詞,何か飲み物がほしいです。,I want something to drink.,I'd like something to drink.|I would like something to drink.,something to drink =「何か飲むもの」（形容詞的用法）。
+junior,不定詞・動名詞,報告書を書き終えました。,I finished writing the report.,I've finished writing the report.|I have finished writing the report.,finish の後ろは動名詞。finish to 〜 は誤り。
+junior,不定詞・動名詞,彼はその知らせを聞いて驚きました。,He was surprised to hear the news.,,感情の原因を表す to 不定詞。
+junior,不定詞・動名詞,どこで乗り換えればいいか教えてください。,Please tell me where to change trains.,Please tell me where to transfer.|Could you tell me where to change trains?,疑問詞 + to 〜 =「どこで〜すべきか」。
+junior,受動態,この製品は日本で作られています。,This product is made in Japan.,,受動態 be + 過去分詞。made in + 国。
+junior,受動態,その店は月曜日は閉まっています。,The store is closed on Mondays.,The shop is closed on Mondays.|The store is closed on Monday.,closed は形容詞的に使われる。曜日の複数形で「毎週〜曜日」。
+junior,受動態,会議は延期されました。,The meeting was postponed.,The meeting was put off.,postpone =「延期する」の受動態。アナウンスで頻出。
+junior,受動態,朝食は7時から出されます。,Breakfast is served from seven.,Breakfast is served from 7.|Breakfast is served from seven o'clock.,serve =「（食事を）出す」。ホテルの案内で頻出。
+junior,受動態,このビルでは喫煙は禁止されています。,Smoking is not allowed in this building.,Smoking is prohibited in this building.|Smoking isn't allowed in this building.,be not allowed =「許されていない」。
+junior,受動態,私はパーティーに招待されました。,I was invited to the party.,,invite 人 to 〜 の受動態。
+junior,受動態,その歌は世界中で愛されています。,The song is loved all over the world.,The song is loved around the world.,all over the world =「世界中で」。
+junior,受動態,その会社は1990年に設立されました。,The company was founded in 1990.,The company was established in 1990.,found（設立する）と find（見つける）の違いに注意。
+junior,現在完了,私はもう昼食を食べました。,I have already had lunch.,I've already had lunch.|I have already eaten lunch.|I've already eaten lunch.,完了の現在完了 have + 過去分詞。already は have の後。
+junior,現在完了,京都に行ったことがありますか？,Have you ever been to Kyoto?,,経験は Have you ever been to 〜?。
+junior,現在完了,私はここに5年間住んでいます。,I have lived here for five years.,I've lived here for five years.|I have lived here for 5 years.|I've been living here for five years.,継続の現在完了。for + 期間。
+junior,現在完了,荷物はまだ届いていません。,The package hasn't arrived yet.,The package has not arrived yet.|The package hasn't come yet.,否定文の yet =「まだ」。
+junior,現在完了,私はかぎをなくしてしまいました。,I've lost my key.,I have lost my key.|I've lost my keys.,結果の現在完了（今も見つかっていない）。
+junior,現在完了,彼女は先週からずっと病気です。,She has been sick since last week.,She's been sick since last week.|She has been ill since last week.,since + 起点 =「〜以来ずっと」。
+junior,現在完了,その映画を3回見たことがあります。,I have seen the movie three times.,I've seen the movie three times.|I have seen that movie three times.|I've seen that movie three times.,回数は 〜 times。2回は twice。
+junior,現在完了,もう報告書を書き終えましたか？,Have you finished the report yet?,Have you finished writing the report yet?|Have you finished the report?,疑問文の yet =「もう」。
+senior,関係代名詞,これは私が昨日買った本です。,This is the book I bought yesterday.,This is the book that I bought yesterday.|This is the book which I bought yesterday.,目的格の関係代名詞（that / which）は省略できる。
+senior,関係代名詞,受付にいる女性に聞いてください。,Please ask the woman at the reception desk.,Please ask the woman who is at the reception desk.|Please ask the woman at the front desk.|Ask the woman at the reception desk.,前置詞句 at 〜 で名詞を後ろから修飾できる。
+senior,関係代名詞,英語を話せるスタッフが必要です。,We need staff who can speak English.,We need staff that can speak English.|We need someone who can speak English.,人を説明する主格の関係代名詞 who。
+senior,関係代名詞,駅の近くにあるホテルに泊まりました。,I stayed at a hotel which is near the station.,I stayed at a hotel near the station.|I stayed at a hotel that is near the station.,物を説明する which / that。
+senior,関係代名詞,あなたが探している書類はここにあります。,The document you are looking for is here.,The document that you are looking for is here.|Here is the document you are looking for.|Here's the document you're looking for.,関係代名詞の省略。look for の for を忘れずに。
+senior,関係代名詞,これが私の言っていたレストランです。,This is the restaurant I told you about.,This is the restaurant that I told you about.|This is the restaurant I was talking about.,tell 人 about 〜 の about が文末に残る。
+senior,関係代名詞,私が欲しいものはこれです。,This is what I want.,What I want is this.,what =「〜すること・もの」。
+senior,関係代名詞,彼女が生まれた町は海の近くです。,The town where she was born is near the sea.,The town she was born in is near the sea.,場所を説明する関係副詞 where。
+senior,分詞,窓のそばに立っている男性は私の上司です。,The man standing by the window is my boss.,The man who is standing by the window is my boss.|The man standing by the window is my supervisor.,現在分詞（〜している）で名詞を後ろから修飾。
+senior,分詞,これは英語で書かれた手紙です。,This is a letter written in English.,This is a letter which is written in English.|This is a letter that was written in English.,過去分詞（〜された）で名詞を後ろから修飾。
+senior,分詞,修理された自転車を受け取りました。,I picked up the repaired bike.,I picked up the repaired bicycle.|I got the repaired bike.,単独の分詞は名詞の前に置く。
+senior,分詞,その知らせはわくわくするものでした。,The news was exciting.,,exciting =（人を）わくわくさせる。人が主語なら excited。
+senior,分詞,私はその結果にがっかりしました。,I was disappointed with the result.,I was disappointed by the result.|I was disappointed at the result.,disappointed =（人が）がっかりした。
+senior,分詞,修理してもらうために車を預けました。,I left my car to have it repaired.,I left my car to get it repaired.,have + 物 + 過去分詞 =「〜してもらう」。
+senior,分詞,髪を切ってもらいました。,I had my hair cut.,I got my hair cut.|I got a haircut.,have + 物 + 過去分詞。cut は過去分詞も cut。
+senior,分詞,ドアにかぎをかけたままにしておいてください。,Please keep the door locked.,Keep the door locked.|Please leave the door locked.,keep + 物 + 過去分詞 =「〜された状態に保つ」。
+senior,間接疑問・接続詞,駅がどこにあるか教えていただけますか？,Could you tell me where the station is?,Can you tell me where the station is?|Could you tell me where the station is located?,間接疑問は 疑問詞 + 主語 + 動詞 の語順。
+senior,間接疑問・接続詞,会議が何時に始まるか知っていますか？,Do you know what time the meeting starts?,Do you know when the meeting starts?|Do you know what time the meeting will start?,Do you know + 間接疑問。
+senior,間接疑問・接続詞,彼が来るかどうかわかりません。,I don't know if he will come.,I don't know whether he will come.|I don't know if he's coming.|I'm not sure if he will come.,if / whether =「〜かどうか」。
+senior,間接疑問・接続詞,忙しかったので行けませんでした。,I couldn't go because I was busy.,I could not go because I was busy.|I was busy so I couldn't go.,because + 理由。so を使うと結果を後ろに置く。
+senior,間接疑問・接続詞,雨が降っていたけれど試合は行われました。,"Although it was raining, the game was played.","The game was played although it was raining.|Though it was raining, the game was held.|Although it was raining, the game was held.",although =「〜だけれども」。
+senior,間接疑問・接続詞,着いたらすぐに電話してください。,Please call me as soon as you arrive.,Call me as soon as you arrive.|Please call me as soon as you get there.,時を表す節では未来のことも現在形で表す。
+senior,間接疑問・接続詞,急がないと電車に乗り遅れますよ。,"Hurry up, or you'll miss the train.","Hurry up or you will miss the train.|If you don't hurry you'll miss the train.|If you don't hurry, you'll miss the train.",命令文 + or … =「〜しなさい、さもないと…」。
+senior,間接疑問・接続詞,質問があればいつでも聞いてください。,"If you have any questions, please ask me anytime.","Please ask me anytime if you have any questions.|If you have any questions, feel free to ask me.",if 節 + 命令文。any questions で「何か質問」。
+senior,仮定法,もし時間があれば手伝うのですが。,"If I had time, I would help you.","If I had time, I'd help you.|I would help you if I had time.|I'd help you if I had time.",現在の事実に反する仮定は 過去形 + would。
+senior,仮定法,もっと英語が上手に話せたらいいのに。,I wish I could speak English better.,I wish I spoke English better.,I wish + 過去形 =「〜ならいいのに」。
+senior,仮定法,私があなただったらその仕事を引き受けます。,"If I were you, I would take the job.","If I were you, I'd take the job.|I'd take the job if I were you.",If I were you =「私があなたなら」。助言の定番。
+senior,仮定法,もっと早く家を出ていれば間に合ったのに。,"If I had left home earlier, I would have been on time.","If I'd left home earlier, I would have been on time.|If I had left earlier, I would have been on time.",過去の事実に反する仮定は had + 過去分詞 / would have + 過去分詞。
+senior,仮定法,車があればもっと便利なのに。,It would be more convenient if I had a car.,"If I had a car, it would be more convenient.|If I had a car, life would be more convenient.",仮定法過去。条件の if 節は後ろにも置ける。
+senior,仮定法,窓を開けてもかまいませんか？,Would you mind if I opened the window?,Do you mind if I open the window?|Would you mind my opening the window?,Would you mind if I + 過去形? は丁寧な許可の求め方。
+senior,丁寧な依頼・提案,折り返しお電話いただけますか？,Could you call me back?,Could you please call me back?|Would you call me back?|Can you call me back?,call back =「折り返し電話する」。
+senior,丁寧な依頼・提案,伝言をお願いできますか？,Can I leave a message?,Could I leave a message?|May I leave a message?,電話で不在のときの定番表現。
+senior,丁寧な依頼・提案,ご予約のお名前をいただけますか？,May I have your name for the reservation?,Could I have your name for the reservation?|Can I have your name for the reservation?,May I have 〜? =「〜をいただけますか」。
+senior,丁寧な依頼・提案,この用紙に記入していただけますか？,Could you fill out this form?,Could you please fill out this form?|Would you fill out this form?|Could you fill in this form?,fill out / fill in =「記入する」。
+senior,丁寧な依頼・提案,タクシーで行くのはどうですか？,How about taking a taxi?,What about taking a taxi?|Why don't we take a taxi?|Why don't you take a taxi?,How about 〜ing? =「〜するのはどうですか」。
+senior,丁寧な依頼・提案,早めに予約することをお勧めします。,I recommend making a reservation early.,I recommend booking early.|I suggest making a reservation early.|I recommend that you make a reservation early.,recommend / suggest + 動名詞。
+senior,丁寧な依頼・提案,少々お待ちいただけますか？,Could you hold on a moment?,Could you wait a moment?|Could you hold on for a moment?|Please hold on a moment.,hold on =（電話を切らずに）待つ。
+senior,丁寧な依頼・提案,会議を来週に延期してもよろしいでしょうか？,Would it be possible to postpone the meeting until next week?,Can we postpone the meeting until next week?|Could we put off the meeting until next week?|Would it be possible to postpone the meeting to next week?,Would it be possible to 〜? はとても丁寧な依頼。
+senior,丁寧な依頼・提案,資料を添付しましたのでご確認ください。,I've attached the document so please check it.,"I have attached the document, so please check it.|Please check the attached document.|I've attached the document. Please check it.",attach =「添付する」。ビジネスメールの定番。
+senior,丁寧な依頼・提案,ご不便をおかけして申し訳ありません。,We apologize for the inconvenience.,We are sorry for the inconvenience.|We're sorry for the inconvenience.,お知らせ・アナウンスで必ず出る表現。
+senior,時制の応用,電車が到着したとき私はすでに駅にいました。,I was already at the station when the train arrived.,I had already arrived at the station when the train came.,「すでに〜していた」は already を使う。過去のある時点より前のことは過去完了 had + 過去分詞でも表せる。
+senior,時制の応用,彼女は2時間ずっと待っています。,She has been waiting for two hours.,She's been waiting for two hours.|She has been waiting for 2 hours.,現在完了進行形 have been + 〜ing は動作の継続。
+senior,時制の応用,来週の今ごろはハワイにいるでしょう。,I'll be in Hawaii this time next week.,I will be in Hawaii this time next week.|This time next week I'll be in Hawaii.,this time next week =「来週の今ごろ」。
+senior,時制の応用,明日の正午までにその仕事を終えているでしょう。,I will have finished the work by noon tomorrow.,I'll have finished the work by noon tomorrow.|I will have finished the job by noon tomorrow.,未来完了 will have + 過去分詞。by =「〜までに」。
+senior,時制の応用,エレベーターは現在点検中です。,The elevator is being checked now.,The elevator is being inspected now.|The elevator is under inspection now.,進行形の受動態 be being + 過去分詞。
+senior,時制の応用,道路は今工事中です。,The road is under construction now.,The road is being repaired now.|The road is under construction.,under construction =「工事中」。お知らせで頻出。
+senior,時制の応用,彼は来たばかりです。,He has just arrived.,He's just arrived.|He just arrived.|He has just come.,just は have と過去分詞の間。
+senior,時制の応用,会議の前に資料を準備しておきます。,I'll prepare the materials before the meeting.,I will prepare the materials before the meeting.|I'll get the documents ready before the meeting.,before + 名詞。materials =「資料」。
+senior,アナウンス・お知らせ,本日は閉店時間が早まります。,The store will close early today.,The store closes early today.|The shop will close early today.,アナウンス表現。early は副詞。
+senior,アナウンス・お知らせ,3番線の電車は15分遅れています。,The train on track three is fifteen minutes late.,The train on platform three is fifteen minutes late.|The train on track 3 is 15 minutes late.|The train on platform 3 is delayed by 15 minutes.|The train on platform three is delayed by fifteen minutes.,駅のアナウンスの形。track / platform =「番線」。
+senior,アナウンス・お知らせ,お客様は2階の受付にお越しください。,Customers should go to the reception desk on the second floor.,Customers please go to the reception desk on the second floor.|Please go to the reception desk on the second floor.,施設案内でよく出る形。
+senior,アナウンス・お知らせ,イベントは雨のため中止になりました。,The event was canceled because of rain.,The event was cancelled because of rain.|The event was canceled due to rain.|The event was cancelled due to rain.,because of / due to + 名詞。
+senior,アナウンス・お知らせ,詳しくはウェブサイトをご覧ください。,Please visit our website for more information.,Please see our website for details.|Please check our website for more information.|For more information please visit our website.,for more information / for details。
+senior,アナウンス・お知らせ,まもなく搭乗を開始します。,We will begin boarding soon.,We will start boarding soon.|Boarding will begin soon.|We'll begin boarding soon.,空港アナウンスの定番。boarding =「搭乗」。
+senior,アナウンス・お知らせ,携帯電話の電源をお切りください。,Please turn off your cell phone.,Please turn off your mobile phone.|Please turn off your phone.|Please switch off your mobile phone.,turn off =「（電源を）切る」。
+senior,アナウンス・お知らせ,入場は無料ですが予約が必要です。,"Admission is free, but a reservation is required.","Admission is free, but you need a reservation.|Entry is free, but a reservation is required.",required =「必要とされる」。お知らせで頻出。

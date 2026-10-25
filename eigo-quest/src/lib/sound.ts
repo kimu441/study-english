@@ -38,3 +38,15 @@ export const sfx = {
   },
   complete: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.3, 'triangle')),
 };
+
+/** 英語の発音（ブラウザの音声合成） */
+export function speak(text: string) {
+  try {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  } catch {
+    /* 非対応環境は無視 */
+  }
+}

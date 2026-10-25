@@ -12,8 +12,11 @@ export default function Header({ streak, studiedToday, xpToday, dailyGoal = 50 }
   return (
     <header className="sticky top-0 z-30 border-b-2 border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3">
-        <div className="text-2xl font-black tracking-tight text-green-500">
-          eigo<span className="text-sky-500">quest</span>
+        <div className="leading-none">
+          <div className="text-2xl font-black tracking-tight text-green-500">
+            eigo<span className="text-sky-500">quest</span>
+          </div>
+          <div className="mt-0.5 text-[10px] font-black tracking-wide text-slate-400">TOEIC Bridge 対策</div>
         </div>
         <div className="flex items-center gap-2">
           <div
