@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Crown, Lock, Play, Star, X } from 'lucide-react';
 import type { StageState } from '../lib/stats';
 
@@ -13,6 +13,14 @@ const TOP = 70;
 
 export default function PathMap({ states, onStart }: Props) {
   const [selected, setSelected] = useState<StageState | null>(null);
+  const currentRef = useRef<HTMLDivElement>(null);
+
+  // ステージが多いマップでは、最初に開いたとき今のステージまでスクロールする
+  useEffect(() => {
+    currentRef.current?.scrollIntoView({ block: 'center' });
+  }, []);
+
+  const current = states.find((s) => s.status === 'available' && s.index > 1);
 
   const nodes = states.map((s, i) => ({ s, x: W / 2 + Math.round(Math.sin(i * 1.25) * 78), y: TOP + i * ROW }));
   const height = TOP * 2 + (states.length - 1) * ROW;
@@ -42,7 +50,7 @@ export default function PathMap({ states, onStart }: Props) {
 
         {nodes.map(({ s, x, y }) => (
           <div key={s.stage.id}>
-            <div className="absolute" style={{ left: x - 40, top: y - 40 }}>
+            <div ref={s === current ? currentRef : undefined} className="absolute" style={{ left: x - 40, top: y - 40 }}>
               {s.status === 'available' && (
                 <>
                   <span className="absolute inset-0 animate-ring rounded-full bg-green-400" />

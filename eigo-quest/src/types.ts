@@ -7,6 +7,9 @@ export type Rating = 'again' | 'hard' | 'good' | 'easy';
 /** 問題のグループ: TOEIC Bridge 単語 / 瞬間英作文 */
 export type Deck = 'word' | 'composition';
 
+/** 単語帳: TOEIC Bridge / 高校必修800 / マイ単語帳（瞬間英作文は常に 'toeic'） */
+export type BookId = 'toeic' | 'core800' | 'custom';
+
 /** 単語レベル: 中学 / 高校 */
 export type WordLevel = 'junior' | 'senior';
 
@@ -31,8 +34,11 @@ export interface Card {
   explanation: string;
 
   deck: Deck;
+  book: BookId;
   /** レベル（中学 / 高校） */
   level: WordLevel;
+  /** マイ単語帳で登録した番号（手持ちの単語帳の番号など） */
+  no?: number;
   // ---- SRS の状態 ----
   /** 復習間隔（日） */
   interval: number;
@@ -77,14 +83,26 @@ export interface ReviewLog {
 export interface Stage {
   id: string;
   deck: Deck;
+  book: BookId;
   level: WordLevel;
   title: string;
   description: string;
   emoji: string;
 }
 
-/** 学習範囲の単位（例: 'word:junior' = 単語・中学レベル） */
-export type ScopeKey = `${Deck}:${WordLevel}`;
+/** 学習範囲の単位（例: 'word:junior' = TOEIC Bridge 単語・中学レベル、'core800' = 高校必修800） */
+export type ScopeKey = `${Deck}:${WordLevel}` | 'core800' | 'custom';
+
+/** マイ単語帳に登録した単語 */
+export interface CustomWord {
+  id: string;
+  /** 番号（任意）。番号順にステージが並ぶ */
+  no: number | null;
+  english: string;
+  japanese: string;
+  example: string;
+  exampleJa: string;
+}
 
 /** 試験日に向けた学習計画 */
 export interface StudyPlan {
@@ -103,4 +121,6 @@ export interface AppData {
   logs: ReviewLog[];
   /** 未設定なら null（古い保存データには項目自体が無い） */
   plan?: StudyPlan | null;
+  /** マイ単語帳（古い保存データには項目自体が無い） */
+  customWords?: CustomWord[];
 }

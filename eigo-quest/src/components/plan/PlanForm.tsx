@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { ScopeKey, StudyPlan } from '../../types';
-import { DECK_META, LEVEL_LABEL } from '../../data/decks';
+import { BOOK_META, DECK_META, LEVEL_LABEL } from '../../data/decks';
 import { ALL_SCOPES } from '../../lib/plan';
 import { addDays, diffDays } from '../../lib/srs';
 
@@ -17,14 +17,17 @@ interface Props {
 const REVIEW_OPTIONS = [0, 3, 7];
 
 export function scopeLabel(key: ScopeKey) {
+  if (key === 'core800' || key === 'custom') return BOOK_META[key].label;
   const [deck, level] = key.split(':') as [keyof typeof DECK_META, keyof typeof LEVEL_LABEL];
-  return `${DECK_META[deck].short}・${LEVEL_LABEL[level]}`;
+  return `${deck === 'word' ? BOOK_META.toeic.short : DECK_META[deck].short}・${LEVEL_LABEL[level]}`;
 }
 
 /** 試験日・範囲・総復習期間の設定フォーム */
 export default function PlanForm({ initial, today, counts, onSave, onCancel, onDelete }: Props) {
   const [examDate, setExamDate] = useState(initial?.examDate ?? addDays(today, 60));
-  const [scope, setScope] = useState<ScopeKey[]>(initial?.scope ?? ALL_SCOPES);
+  // 問題が1つもない範囲（未登録のマイ単語帳など）は選べない
+  const scopes = ALL_SCOPES.filter((k) => counts[k] > 0);
+  const [scope, setScope] = useState<ScopeKey[]>(() => (initial?.scope ?? scopes).filter((k) => counts[k] > 0));
   const [reviewDays, setReviewDays] = useState(initial?.reviewDays ?? 7);
 
   const valid = examDate > today && scope.length > 0;
@@ -52,7 +55,7 @@ export default function PlanForm({ initial, today, counts, onSave, onCancel, onD
       <div>
         <div className="text-xs font-extrabold text-slate-400">試験日までに網羅する範囲</div>
         <div className="mt-2 grid grid-cols-2 gap-2">
-          {ALL_SCOPES.map((k) => {
+          {scopes.map((k) => {
             const on = scope.includes(k);
             return (
               <button

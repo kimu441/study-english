@@ -1,12 +1,12 @@
-import type { AppData, Rating, ReviewLog } from '../types';
+import type { AppData, CustomWord, Rating, ReviewLog } from '../types';
 import { createInitialCards } from '../data/decks';
 import { addDays, calcXp, todayStr } from './srs';
 
 /** ダッシュボードの見た目確認用デモデータ */
-export function generateDemoData(): AppData {
+export function generateDemoData(customWords: CustomWord[] = []): AppData {
   const today = todayStr();
   const seen: Record<string, number> = { word: 0, composition: 0 };
-  const cards = createInitialCards().map((c, i) => {
+  const cards = createInitialCards(customWords).map((c, i) => {
     // 単語は先頭30語、瞬間英作文は先頭15文を学習済みにする
     const k = seen[c.deck]++;
     if (k >= (c.deck === 'word' ? 30 : 15)) return c;

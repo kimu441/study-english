@@ -61,7 +61,7 @@ export default function PlanView({ cards, logs, plan, today, onSave, onGo }: Pro
   const newDone = s.dailyNew > 0 && s.todayNew >= s.dailyNew;
   const target = s.inFinalReview ? plan.examDate : s.learnEndDate;
   const onTrack = s.remaining === 0 || (s.projectedFinish !== null && s.projectedFinish <= target);
-  const decks = [...new Set(plan.scope.map((k) => k.split(':')[0] as Deck))];
+  const decks = [...new Set(plan.scope.map((k): Deck => (k.startsWith('composition') ? 'composition' : 'word')))];
 
   return (
     <>

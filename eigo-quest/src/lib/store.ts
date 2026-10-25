@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { AppData, Card, Rating, ReviewLog, StudyPlan } from '../types';
+import type { AppData, Card, CustomWord, Rating, ReviewLog, StudyPlan } from '../types';
 import { createInitialCards } from '../data/decks';
 import { calcNextReview, calcXp, initialSrsState, todayStr } from './srs';
 import { applyReviewResult } from './review';
@@ -11,23 +11,29 @@ const KEY = 'eigo-quest:v1';
 /** 保存データから引き継ぐ学習状態のキー（SRS + 復習リスト） */
 const PROGRESS_KEYS = Object.keys(initialSrsState()) as (keyof ReturnType<typeof initialSrsState>)[];
 
+/**
+ * 問題の内容は最新のデータ(seed)を使い、学習の進み具合だけ保存済みのカードから引き継ぐ。
+ * 古い保存データに無い項目（復習リストなど）は初期値のまま。
+ */
+function mergeProgress(seed: Card[], saved: Card[]): Card[] {
+  const existing = new Map(saved.map((c) => [c.id, c]));
+  return seed.map((s) => {
+    const e = existing.get(s.id) as Partial<Card> | undefined;
+    if (!e) return s;
+    const progress = Object.fromEntries(PROGRESS_KEYS.map((k) => [k, e[k] ?? s[k]]));
+    return { ...s, ...progress } as Card;
+  });
+}
+
 function load(): AppData {
-  const seed = createInitialCards();
   const parsed = readJson<AppData>(KEY);
   if (parsed?.version === 1 && Array.isArray(parsed.cards) && Array.isArray(parsed.logs)) {
-    const existing = new Map(parsed.cards.map((c) => [c.id, c]));
-    // 問題の内容は最新のデータ(seed)を使い、学習の進み具合だけ保存データから引き継ぐ。
-    // 古い保存データに無い項目（復習リストなど）は初期値のまま。
-    const merged = seed.map((s) => {
-      const e = existing.get(s.id) as Partial<Card> | undefined;
-      if (!e) return s;
-      const progress = Object.fromEntries(PROGRESS_KEYS.map((k) => [k, e[k] ?? s[k]]));
-      return { ...s, ...progress } as Card;
-    });
-    return { version: 1, cards: merged, logs: parsed.logs, plan: parsed.plan ?? null };
+    const customWords = parsed.customWords ?? [];
+    const cards = mergeProgress(createInitialCards(customWords), parsed.cards);
+    return { version: 1, cards, logs: parsed.logs, plan: parsed.plan ?? null, customWords };
   }
   // 未保存・破損データは初期化
-  return { version: 1, cards: seed, logs: [], plan: null };
+  return { version: 1, cards: createInitialCards(), logs: [], plan: null, customWords: [] };
 }
 
 export function useStore() {
@@ -76,20 +82,37 @@ export function useStore() {
 
   const setPlan = useCallback((plan: StudyPlan | null) => setData((prev) => ({ ...prev, plan })), []);
 
-  // 学習計画（試験日）はリセット・デモ投入でも残す
+  /** マイ単語帳を丸ごと置き換える（残った単語の学習記録は引き継ぐ） */
+  const saveCustomWords = useCallback((customWords: CustomWord[]) => {
+    setData((prev) => ({ ...prev, customWords, cards: mergeProgress(createInitialCards(customWords), prev.cards) }));
+  }, []);
+
+  // 学習計画（試験日）とマイ単語帳はリセット・デモ投入でも残す
   const reset = useCallback(
-    () => setData((prev) => ({ version: 1, cards: createInitialCards(), logs: [], plan: prev.plan })),
+    () =>
+      setData((prev) => ({
+        version: 1,
+        cards: createInitialCards(prev.customWords),
+        logs: [],
+        plan: prev.plan,
+        customWords: prev.customWords,
+      })),
     [],
   );
-  const loadDemo = useCallback(() => setData((prev) => ({ ...generateDemoData(), plan: prev.plan })), []);
+  const loadDemo = useCallback(
+    () => setData((prev) => ({ ...generateDemoData(prev.customWords), plan: prev.plan, customWords: prev.customWords })),
+    [],
+  );
 
   return {
     cards: data.cards,
     logs: data.logs,
     plan: data.plan ?? null,
+    customWords: data.customWords ?? [],
     answerCard,
     removeFromReview,
     setPlan,
+    saveCustomWords,
     reset,
     loadDemo,
   };

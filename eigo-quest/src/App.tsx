@@ -7,7 +7,7 @@ import Session from './components/session/Session';
 import Dashboard from './components/Dashboard';
 import PlanView from './components/plan/PlanView';
 import PlanBanner from './components/plan/PlanBanner';
-import { STAGES } from './data/decks';
+import { getStages } from './data/decks';
 import type { Card, ComposeMode, Deck } from './types';
 import { useStore } from './lib/store';
 import { todayStr } from './lib/srs';
@@ -29,17 +29,18 @@ const TABS = [
 const COMPOSE_MODE_KEY = 'eigo-quest:compose-mode';
 const loadComposeMode = (): ComposeMode => (readPref(COMPOSE_MODE_KEY) === 'type' ? 'type' : 'oral');
 
-const WORD_STAGES = STAGES.filter((s) => s.deck === 'word');
-const COMPOSITION_STAGES = STAGES.filter((s) => s.deck === 'composition');
-const STAGE_ORDER = Object.fromEntries(STAGES.map((s, i) => [s.id, i]));
 
 export default function App() {
-  const { cards, logs, plan, answerCard, removeFromReview, setPlan, reset, loadDemo } = useStore();
+  const { cards, logs, plan, customWords, answerCard, removeFromReview, setPlan, saveCustomWords, reset, loadDemo } = useStore();
   const [tab, setTab] = useState<Tab>('word');
   const [composeMode, setComposeMode] = useState<ComposeMode>(loadComposeMode);
   const [session, setSession] = useState<{ key: number; items: SessionItem[] } | null>(null);
 
   const today = todayStr();
+  const stages = useMemo(() => getStages(customWords), [customWords]);
+  const wordStages = useMemo(() => stages.filter((s) => s.deck === 'word'), [stages]);
+  const compositionStages = useMemo(() => stages.filter((s) => s.deck === 'composition'), [stages]);
+  const stageOrder = useMemo(() => Object.fromEntries(stages.map((s, i) => [s.id, i])), [stages]);
   const wordCards = useMemo(() => cards.filter((c) => c.deck === 'word'), [cards]);
   const compositionCards = useMemo(() => cards.filter((c) => c.deck === 'composition'), [cards]);
   const reviewCount = cards.filter((c) => c.inReviewList).length;
@@ -49,7 +50,7 @@ export default function App() {
   const planSummary = useMemo(() => (plan ? computePlan(cards, logs, plan, today) : null), [cards, logs, plan, today]);
 
   const start = (pool: Card[], mode: SessionMode, stageId?: string) => {
-    const items = pickSessionCards(pool, { mode, stageId, stageOrder: STAGE_ORDER });
+    const items = pickSessionCards(pool, { mode, stageId, stageOrder });
     if (items.length === 0) return;
     setSession({ key: Date.now(), items });
   };
@@ -77,12 +78,22 @@ export default function App() {
       <Header streak={streak.current} studiedToday={streak.studiedToday} xpToday={xpToday} />
       <main className="mx-auto max-w-xl space-y-6 px-4 pb-28 pt-5">
         {(tab === 'word' || tab === 'composition') && <PlanBanner summary={planSummary} onOpen={() => setTab('plan')} />}
-        {tab === 'word' && <TrackHome key="word" deck="word" stages={WORD_STAGES} cards={wordCards} onStart={start} />}
+        {tab === 'word' && (
+          <TrackHome
+            key="word"
+            deck="word"
+            stages={wordStages}
+            cards={wordCards}
+            onStart={start}
+            customWords={customWords}
+            onSaveCustomWords={saveCustomWords}
+          />
+        )}
         {tab === 'composition' && (
           <TrackHome
             key="composition"
             deck="composition"
-            stages={COMPOSITION_STAGES}
+            stages={compositionStages}
             cards={compositionCards}
             onStart={start}
             composeMode={composeMode}

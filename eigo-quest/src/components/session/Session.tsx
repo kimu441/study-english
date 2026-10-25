@@ -4,7 +4,7 @@ import type { Card, ComposeMode, Rating } from '../../types';
 import { calcXp } from '../../lib/srs';
 import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../../lib/session';
 import { isSoundOn, setSoundOn, sfx, speak } from '../../lib/sound';
-import { DECK_META, LEVEL_LABEL, WORD_DIRECTION } from '../../data/decks';
+import { BOOK_META, DECK_META, LEVEL_LABEL, WORD_DIRECTION } from '../../data/decks';
 import SessionResult, { type SessionTotals } from './SessionResult';
 import AnswerSheet from './AnswerSheet';
 
@@ -153,13 +153,14 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
         <div className="mb-3 flex items-center gap-2">
           <span className={`rounded-full px-3 py-1 text-xs font-black ${reason.cls}`}>{reason.label}</span>
           <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-black text-purple-600">
-            {LEVEL_LABEL[card.level]}
+            {card.book === 'toeic' ? LEVEL_LABEL[card.level] : BOOK_META[card.book].short}
           </span>
           {card.inReviewList && item.reason !== 'review' && (
             <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-600">復習リスト</span>
           )}
           <span className="truncate text-xs font-extrabold text-slate-400">
-            {DECK_META[card.deck].label}・{card.category}
+            {card.deck === 'word' ? `${BOOK_META[card.book].label} 単語` : DECK_META[card.deck].label}・
+            {card.no !== undefined ? `No.${card.no}` : card.category}
           </span>
         </div>
         <h2 className="mb-5 text-xl font-black text-slate-700">

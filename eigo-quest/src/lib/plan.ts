@@ -1,5 +1,5 @@
 import type { Card, ReviewLog, ScopeKey, StudyPlan } from '../types';
-import { DECKS, LEVELS } from '../data/decks';
+import { LEVELS } from '../data/decks';
 import { addDays, diffDays } from './srs';
 import { isDue } from './stats';
 import { SESSION_SIZE } from './session';
@@ -11,8 +11,14 @@ const REVIEW_QUEST_SIZE = SESSION_SIZE.weak;
 /** ペース判定に使う直近の日数 */
 const PACE_WINDOW = 7;
 
-export const ALL_SCOPES: ScopeKey[] = DECKS.flatMap((d) => LEVELS.map((l) => `${d}:${l}` as const));
-export const scopeOf = (c: Card): ScopeKey => `${c.deck}:${c.level}`;
+export const ALL_SCOPES: ScopeKey[] = [
+  ...LEVELS.map((l) => `word:${l}` as const),
+  'core800',
+  'custom',
+  ...LEVELS.map((l) => `composition:${l}` as const),
+];
+/** TOEIC Bridge の単語・英作文はレベル別、それ以外の単語帳は単語帳ごとに1つの範囲 */
+export const scopeOf = (c: Card): ScopeKey => (c.book === 'toeic' ? `${c.deck}:${c.level}` : c.book);
 
 /** 各カードを初めて学習した日（cardId → YYYY-MM-DD） */
 export function firstStudyDates(logs: ReviewLog[]): Map<string, string> {
