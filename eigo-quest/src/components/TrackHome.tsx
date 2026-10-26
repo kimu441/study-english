@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
-import type { BookId, Card, ComposeMode, CustomWord, Deck, Stage, WordLevel } from '../types';
+import { BookOpen, Headphones, Keyboard, Mic } from 'lucide-react';
+import type { BookId, Card, ComposeMode, CustomWord, Deck, Stage, WordLevel, WordMode } from '../types';
 import ReviewWidget from './ReviewWidget';
 import PathMap from './PathMap';
 import CustomWordsPanel from './CustomWordsPanel';
-import ComposeModePicker from './ComposeModePicker';
+import ModePicker, { type ModeOption } from './ModePicker';
+import VoicePicker from './VoicePicker';
 import TodayGoal from './plan/TodayGoal';
 import Segmented from './ui/Segmented';
 import { BOOK_META, DECK_META, LEVELS, LEVEL_LABEL, WORD_BOOKS } from '../data/decks';
@@ -20,6 +22,9 @@ interface Props {
   onStart: (pool: Card[], mode: SessionMode, stageId?: string) => void;
   composeMode?: ComposeMode;
   onComposeModeChange?: (m: ComposeMode) => void;
+  /** 単語タブのみ: 解き方 */
+  wordMode?: WordMode;
+  onWordModeChange?: (m: WordMode) => void;
   /** 単語タブのみ: マイ単語帳 */
   customWords?: CustomWord[];
   onSaveCustomWords?: (words: CustomWord[]) => void;
@@ -42,6 +47,16 @@ function loadBook(): BookId {
 
 const BOOK_OPTIONS = WORD_BOOKS.map((b) => ({ id: b, label: BOOK_META[b].label }));
 
+const WORD_MODES: ModeOption<WordMode>[] = [
+  { id: 'read', label: '通常', sub: '英⇔日の4択', Icon: BookOpen },
+  { id: 'listen', label: 'リスニング', sub: '音声を聞いて意味を選ぶ', Icon: Headphones },
+];
+
+const COMPOSE_MODES: ModeOption<ComposeMode>[] = [
+  { id: 'oral', label: '口頭で言う', sub: '答えを見て自己判定', Icon: Mic },
+  { id: 'type', label: '入力する', sub: '英文をタイピング', Icon: Keyboard },
+];
+
 /** 単語 / 瞬間英作文 それぞれのホーム画面（単語帳・レベル切り替え + 今日の復習 + ステージマップ） */
 export default function TrackHome({
   deck,
@@ -50,6 +65,8 @@ export default function TrackHome({
   onStart,
   composeMode,
   onComposeModeChange,
+  wordMode,
+  onWordModeChange,
   customWords = [],
   onSaveCustomWords,
   planSummary,
@@ -107,8 +124,14 @@ export default function TrackHome({
 
       {book === 'custom' && onSaveCustomWords && <CustomWordsPanel words={customWords} onSave={onSaveCustomWords} />}
 
+      {deck === 'word' && wordMode && onWordModeChange && (
+        <>
+          <ModePicker title="解き方" options={WORD_MODES} value={wordMode} onChange={onWordModeChange} />
+          <VoicePicker />
+        </>
+      )}
       {deck === 'composition' && composeMode && onComposeModeChange && (
-        <ComposeModePicker value={composeMode} onChange={onComposeModeChange} />
+        <ModePicker title="解答方法" options={COMPOSE_MODES} value={composeMode} onChange={onComposeModeChange} />
       )}
 
       {levelCards.length > 0 && (

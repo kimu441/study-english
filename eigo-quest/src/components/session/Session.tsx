@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Eye, Volume2, VolumeX, X } from 'lucide-react';
-import type { Card, ComposeMode, Rating } from '../../types';
+import type { Card, ComposeMode, Rating, WordMode } from '../../types';
 import { calcXp } from '../../lib/srs';
 import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../../lib/session';
 import { isSoundOn, setSoundOn, sfx, speak } from '../../lib/sound';
@@ -15,6 +15,7 @@ interface Props {
   onRecord: (cardId: string, rating: Rating, answeredCorrectly: boolean) => void;
   onExit: () => void;
   composeMode?: ComposeMode;
+  wordMode?: WordMode;
 }
 
 const REASON: Record<SessionReason, { label: string; cls: string }> = {
@@ -25,7 +26,7 @@ const REASON: Record<SessionReason, { label: string; cls: string }> = {
   extra: { label: '練習', cls: 'bg-slate-100 text-slate-500' },
 };
 
-export default function Session({ items, allCards, onRecord, onExit, composeMode = 'type' }: Props) {
+export default function Session({ items, allCards, onRecord, onExit, composeMode = 'type', wordMode = 'read' }: Props) {
   const [queue, setQueue] = useState<SessionItem[]>(items);
   const [index, setIndex] = useState(0);
   // reveal: 口頭モードで答えを見て、言えたかどうかを自己判定する段階
@@ -41,11 +42,13 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
   const card = item ? (allCards.find((c) => c.id === item.card.id) ?? item.card) : null;
 
   const oral = card?.type === 'speaking' && composeMode === 'oral';
+  // リスニング: 英語は見せずに音声だけ流し、日本語の意味を選ぶ
+  const listening = card?.type === 'vocab' && wordMode === 'listen';
 
   // 単語は出題の向きを切り替え可能（英→日 / 日→英）。瞬間英作文は常に 日→英
   const reverse = useMemo(() => {
     if (!card || card.type !== 'vocab') return false;
-    if (WORD_DIRECTION === 'en-ja') return true;
+    if (listening || WORD_DIRECTION === 'en-ja') return true;
     if (WORD_DIRECTION === 'ja-en') return false;
     return Math.random() < 0.5;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,6 +68,12 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
     return shuffle([correctText, ...others]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item?.card.id, index, reverse]);
+
+  // リスニングは問題が出たら自動で読み上げる
+  useEffect(() => {
+    if (listening && card) speak(card.answer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, listening]);
 
   const canCheck = card?.type === 'vocab' ? selected !== null : input.trim().length > 0;
 
@@ -166,7 +175,9 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
         </div>
         <h2 className="mb-5 text-xl font-black text-slate-700">
           {card.type === 'vocab'
-            ? reverse
+            ? listening
+              ? '音声を聞いて、意味を選ぼう'
+              : reverse
               ? '日本語の意味はどれ？'
               : '英語で正しいのはどれ？'
             : oral
@@ -180,11 +191,21 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
         >
           <div className="text-5xl">🦉</div>
           <div className="relative flex items-center gap-2 rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-xl font-extrabold text-slate-700">
-            {questionText}
-            {reverse && (
-              <button onClick={() => speak(card.answer)} className="rounded-full p-1 text-sky-500 hover:bg-sky-50" aria-label="発音を聞く">
-                <Volume2 className="h-5 w-5" />
+            {listening && phase !== 'review' ? (
+              // 答えるまでは英語を隠す
+              <button onClick={() => speak(card.answer)} className="flex items-center gap-2 text-sky-500" aria-label="もう一度聞く">
+                <Volume2 className="h-8 w-8" />
+                <span className="text-base">もう一度聞く</span>
               </button>
+            ) : (
+              <>
+                {questionText}
+                {reverse && (
+                  <button onClick={() => speak(card.answer)} className="rounded-full p-1 text-sky-500 hover:bg-sky-50" aria-label="発音を聞く">
+                    <Volume2 className="h-5 w-5" />
+                  </button>
+                )}
+              </>
             )}
             <span className="absolute -left-[7px] top-5 h-3 w-3 rotate-45 border-b-2 border-l-2 border-slate-200 bg-white" />
           </div>

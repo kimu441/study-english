@@ -1,3 +1,5 @@
+import { readPref, writePref } from './storage';
+
 /** 外部ファイル不要の効果音（Web Audio API） */
 let ctx: AudioContext | null = null;
 let enabled = true;
@@ -39,11 +41,50 @@ export const sfx = {
   complete: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.3, 'triangle')),
 };
 
-/** 英語の発音（ブラウザの音声合成） */
+// ---------- 英語の発音（ブラウザの音声合成） ----------
+const VOICE_KEY = 'eigo-quest:voice';
+let voiceName = readPref(VOICE_KEY);
+
+/** macOS の効果音のような声は候補から外す */
+const NOVELTY =
+  /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Grandma|Grandpa|Hysterical|Jester|Junior|Organ|Pipe Organ|Ralph|Superstar|Trinoids|Whisper|Wobble|Zarvox)\b/;
+/** 自然に聞こえやすい声（上ほど優先） */
+const PREFERRED = [/Natural/, /Google US English/, /Samantha/, /Ava|Allison|Susan/, /Enhanced|Premium/, /Google/];
+
+const rank = (v: SpeechSynthesisVoice) => {
+  const i = PREFERRED.findIndex((re) => re.test(v.name));
+  return (i === -1 ? PREFERRED.length : i) * 2 + (v.lang.replace('_', '-') === 'en-US' ? 0 : 1);
+};
+
+/** 選べる英語の声（おすすめ順） */
+export function englishVoices(): SpeechSynthesisVoice[] {
+  try {
+    return window.speechSynthesis
+      .getVoices()
+      .filter((v) => v.lang.toLowerCase().startsWith('en') && !NOVELTY.test(v.name))
+      .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+  } catch {
+    return [];
+  }
+}
+
+/** 発音に使う声（選んだ声が無ければ一番おすすめの声） */
+export function currentVoice(): SpeechSynthesisVoice | undefined {
+  const voices = englishVoices();
+  return voices.find((v) => v.name === voiceName) ?? voices[0];
+}
+
+export function setVoiceName(name: string) {
+  voiceName = name;
+  writePref(VOICE_KEY, name);
+}
+
 export function speak(text: string) {
   try {
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
+    const voice = currentVoice();
+    u.voice = voice ?? null;
+    u.lang = voice?.lang ?? 'en-US';
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
   } catch {

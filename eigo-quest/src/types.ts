@@ -13,6 +13,9 @@ export type BookId = 'toeic' | 'core800' | 'custom';
 /** 単語レベル: 中学 / 高校 */
 export type WordLevel = 'junior' | 'senior';
 
+/** 単語の解き方: 通常（文字を見る） / リスニング（音声だけ聞いて意味を選ぶ） */
+export type WordMode = 'read' | 'listen';
+
 /** 瞬間英作文の解答方法: 入力 / 口頭（答えを見て自己判定） */
 export type ComposeMode = 'type' | 'oral';
 

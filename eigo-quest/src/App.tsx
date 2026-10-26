@@ -8,7 +8,7 @@ import Dashboard from './components/Dashboard';
 import PlanView from './components/plan/PlanView';
 import PlanBanner from './components/plan/PlanBanner';
 import { getStages } from './data/decks';
-import type { Card, ComposeMode, Deck } from './types';
+import type { Card, ComposeMode, Deck, WordMode } from './types';
 import { useStore } from './lib/store';
 import { todayStr } from './lib/srs';
 import { dayStats, getStreak } from './lib/stats';
@@ -28,6 +28,8 @@ const TABS = [
 
 const COMPOSE_MODE_KEY = 'eigo-quest:compose-mode';
 const loadComposeMode = (): ComposeMode => (readPref(COMPOSE_MODE_KEY) === 'type' ? 'type' : 'oral');
+const WORD_MODE_KEY = 'eigo-quest:word-mode';
+const loadWordMode = (): WordMode => (readPref(WORD_MODE_KEY) === 'listen' ? 'listen' : 'read');
 
 const isDeck = (t: Tab): t is Deck => t === 'word' || t === 'composition';
 
@@ -35,6 +37,7 @@ export default function App() {
   const { cards, logs, plan, customWords, answerCard, removeFromReview, setPlan, saveCustomWords, reset, loadDemo } = useStore();
   const [tab, setTab] = useState<Tab>('word');
   const [composeMode, setComposeMode] = useState<ComposeMode>(loadComposeMode);
+  const [wordMode, setWordMode] = useState<WordMode>(loadWordMode);
   const [session, setSession] = useState<{ key: number; items: SessionItem[] } | null>(null);
 
   const today = todayStr();
@@ -59,6 +62,11 @@ export default function App() {
     writePref(COMPOSE_MODE_KEY, m);
   };
 
+  const changeWordMode = (m: WordMode) => {
+    setWordMode(m);
+    writePref(WORD_MODE_KEY, m);
+  };
+
   if (session) {
     return (
       <Session
@@ -68,6 +76,7 @@ export default function App() {
         onRecord={answerCard}
         onExit={() => setSession(null)}
         composeMode={composeMode}
+        wordMode={wordMode}
       />
     );
   }
@@ -91,6 +100,8 @@ export default function App() {
               onSaveCustomWords={saveCustomWords}
               composeMode={composeMode}
               onComposeModeChange={changeComposeMode}
+              wordMode={wordMode}
+              onWordModeChange={changeWordMode}
             />
           </>
         )}
