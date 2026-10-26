@@ -1,9 +1,12 @@
 import type { CustomWord } from '../types';
-import { parseCsv } from './csv';
+import { parseCsv, stripBom } from './csv';
 
 export type WordInput = Omit<CustomWord, 'id'>;
 
 const newId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+/** 番号順（番号なしは最後）の並べ替え用 */
+export const byNo = (a: CustomWord, b: CustomWord) => (a.no ?? Infinity) - (b.no ?? Infinity);
+
 const key = (english: string) => english.trim().toLowerCase().replace(/\s+/g, ' ');
 
 /**
@@ -13,7 +16,7 @@ const key = (english: string) => english.trim().toLowerCase().replace(/\s+/g, ' 
  * 英字を含まない行（見出し行など）と、英語・日本語が欠けた行は読み飛ばす。
  */
 export function parseWordList(text: string): { words: WordInput[]; skipped: number } {
-  const clean = text.replace(/^﻿/, '');
+  const clean = stripBom(text);
   const rows = clean.includes('\t')
     ? clean
         .split(/\r?\n/)

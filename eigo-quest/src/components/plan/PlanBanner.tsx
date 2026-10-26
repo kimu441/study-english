@@ -1,6 +1,6 @@
 import { CalendarClock, ChevronRight } from 'lucide-react';
-import type { PlanSummary } from '../../lib/plan';
-import { QUEST_SIZE } from '../../lib/plan';
+import { questsFor, todayNewPct, type PlanSummary } from '../../lib/plan';
+import ProgressBar from '../ui/ProgressBar';
 
 interface Props {
   summary: PlanSummary | null;
@@ -36,14 +36,9 @@ export default function PlanBanner({ summary: s, onOpen }: Props) {
             ? '新出は全範囲クリア！復習を続けよう'
             : done
               ? '今日の新出ノルマ達成！'
-              : `今日のクエスト：新出 あと${Math.ceil((s.dailyNew - s.todayNew) / QUEST_SIZE)}回`}
+              : `今日のクエスト：新出 あと${questsFor(s.dailyNew - s.todayNew)}回`}
         </div>
-        <div className="mt-1 h-2 overflow-hidden rounded-full bg-white">
-          <div
-            className="h-full rounded-full bg-indigo-500"
-            style={{ width: `${s.dailyNew ? Math.min(100, (s.todayNew / s.dailyNew) * 100) : 100}%` }}
-          />
-        </div>
+        <ProgressBar pct={todayNewPct(s)} className="mt-1 h-2 bg-white" barClass="bg-indigo-500" />
         <div className="mt-0.5 text-[11px] font-bold text-slate-400">
           新出 {s.todayNew} / {s.dailyNew}問・復習日の問題 {s.dueToday}問
         </div>

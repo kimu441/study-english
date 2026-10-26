@@ -25,7 +25,7 @@ export function diffDays(a: string, b: string): number {
   return Math.round((p(a) - p(b)) / 86400000);
 }
 
-const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
+export const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
 /** 'YYYY-MM-DD' → '11月30日(日)' */
 export function formatDateJa(dateStr: string): string {

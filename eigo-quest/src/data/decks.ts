@@ -1,6 +1,7 @@
 import type { BookId, Card, CustomWord, Deck, Stage, WordLevel } from '../types';
 import { initialSrsState } from '../lib/srs';
-import { parseCsv } from '../lib/csv';
+import { parseCsv, stripBom } from '../lib/csv';
+import { byNo } from '../lib/customWords';
 import wordsCsv from './toeic-bridge-words.csv?raw';
 import core800Csv from './core-800-words.csv?raw';
 import sentencesCsv from './toeic-bridge-sentences.csv?raw';
@@ -50,6 +51,13 @@ type Item = {
 export const sourceLabel = (c: Pick<Card, 'deck' | 'book'>) =>
   c.deck === 'word' ? BOOK_META[c.book].short : DECK_META.composition.short;
 
+/** 問題のレベル表示（TOEIC Bridge は「中学」「高校」、他の単語帳は単語帳名） */
+export const levelLabel = (c: Pick<Card, 'deck' | 'book' | 'level'>) =>
+  c.book === 'toeic' ? LEVEL_LABEL[c.level] : sourceLabel(c);
+
+/** 問題の位置（マイ単語帳は番号、それ以外はカテゴリ） */
+export const cardTag = (c: Pick<Card, 'no' | 'category'>) => (c.no !== undefined ? `No.${c.no}` : c.category);
+
 /** 単語の例文を解説文にする */
 const exampleText = (example: string, exampleJa: string) =>
   example ? `例文：${example}${exampleJa ? `（${exampleJa}）` : ''}` : '';
@@ -62,7 +70,7 @@ const slug = (s: string) =>
 
 /** CSV の行を [level, category, ...rest] に分解（コメント行・ヘッダー行・不正な行は除く） */
 function dataRows(text: string) {
-  return parseCsv(text.replace(/^\uFEFF/, ''))
+  return parseCsv(stripBom(text))
     .map((r) => r.map((c) => c.trim()))
     .filter(([level, category]) => (level === 'junior' || level === 'senior') && !!category)
     .map(([level, category, ...rest]) => ({ level: level as WordLevel, category, rest }));
@@ -161,7 +169,7 @@ function build(deck: Deck, book: BookId, items: Item[]) {
 function buildCustom(words: CustomWord[]) {
   const sorted = words
     .map((w, i) => ({ w, i }))
-    .sort((a, b) => (a.w.no ?? Infinity) - (b.w.no ?? Infinity) || a.i - b.i)
+    .sort((a, b) => byNo(a.w, b.w) || a.i - b.i)
     .map(({ w }) => w);
   const stages: Stage[] = [];
   const cards: CardContent[] = [];

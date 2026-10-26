@@ -1,6 +1,6 @@
 import { CalendarClock, Flag } from 'lucide-react';
-import type { PlanSummary, ScopeProgress, StageGoal } from '../../lib/plan';
-import { QUEST_SIZE } from '../../lib/plan';
+import { questsFor, todayNewPct, type PlanSummary, type ScopeProgress, type StageGoal } from '../../lib/plan';
+import ProgressBar from '../ui/ProgressBar';
 
 interface Props {
   summary: PlanSummary;
@@ -25,7 +25,8 @@ export default function TodayGoal({ summary: s, progress: p, goal, unit, onOpenP
 
   const remaining = p.total - p.done;
   const done = p.todayNew >= p.dailyNew;
-  const pct = p.dailyNew ? Math.min(100, (p.todayNew / p.dailyNew) * 100) : 100;
+  /** 今日の新出の残り */
+  const left = p.dailyNew - p.todayNew;
 
   return (
     <section className={`rounded-3xl border-2 p-4 ${done ? 'border-green-200 bg-green-50' : 'border-indigo-200 bg-indigo-50'}`}>
@@ -50,16 +51,18 @@ export default function TodayGoal({ summary: s, progress: p, goal, unit, onOpenP
                 「{goal.stage.title}」まで進めよう
               </>
             ) : (
-              `新出をあと${p.dailyNew - p.todayNew}${unit}`
+              `新出をあと${left}${unit}`
             )}
           </div>
-          <div className="mt-2 h-3 overflow-hidden rounded-full bg-white">
-            <div className={`h-full rounded-full transition-all duration-700 ${done ? 'bg-green-500' : 'bg-indigo-500'}`} style={{ width: `${pct}%` }} />
-          </div>
+          <ProgressBar
+            pct={todayNewPct(p)}
+            className="mt-2 h-3 bg-white"
+            barClass={`transition-all duration-700 ${done ? 'bg-green-500' : 'bg-indigo-500'}`}
+          />
           <p className="mt-1.5 text-xs font-bold text-slate-500">
             今日の新出 {p.todayNew} / {p.dailyNew}
             {unit}
-            {!done && `（あと${p.dailyNew - p.todayNew}${unit}・レッスン約${Math.ceil((p.dailyNew - p.todayNew) / QUEST_SIZE)}回）`}
+            {!done && `（あと${left}${unit}・レッスン約${questsFor(left)}回）`}
             ・残り{remaining}
             {unit}を1日{p.dailyNew}
             {unit}ペース

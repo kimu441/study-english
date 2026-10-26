@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, Crown, Flag, Lock, Play, Star, X } from 'lucide-react';
 import type { StageState } from '../lib/stats';
+import ProgressBar from './ui/ProgressBar';
+import { BTN_PRIMARY } from './ui/styles';
 
 interface Props {
   states: StageState[];
@@ -137,19 +139,14 @@ export default function PathMap({ states, onStart, goalStageId }: Props) {
                       {selected.studied} / {selected.cards.length}
                     </span>
                   </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-slate-200">
-                    <div
-                      className="h-full rounded-full bg-green-500"
-                      style={{ width: `${(selected.studied / selected.cards.length) * 100}%` }}
-                    />
-                  </div>
+                  <ProgressBar pct={(selected.studied / selected.cards.length) * 100} />
                 </div>
                 <button
                   onClick={() => {
                     onStart(selected.stage.id);
                     setSelected(null);
                   }}
-                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white transition active:translate-y-0.5 active:border-b-2"
+                  className={`${BTN_PRIMARY} mt-5 flex w-full items-center justify-center gap-2 py-3.5 text-lg`}
                 >
                   <Play className="h-5 w-5 fill-white" />
                   {selected.status === 'completed' ? 'もう一度練習する' : 'レッスン開始'}

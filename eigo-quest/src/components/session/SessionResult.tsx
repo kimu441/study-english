@@ -1,4 +1,5 @@
 import { BookmarkPlus, Target, Trophy, Zap } from 'lucide-react';
+import { BTN_PRIMARY } from '../ui/styles';
 
 export interface SessionTotals {
   xp: number;
@@ -53,7 +54,7 @@ export default function SessionResult({ result, onExit }: Props) {
       )}
       <button
         onClick={onExit}
-        className="mt-10 w-full max-w-sm rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white active:translate-y-0.5 active:border-b-2"
+        className={`${BTN_PRIMARY} mt-10 w-full max-w-sm py-3.5 text-lg`}
       >
         ホームに戻る
       </button>

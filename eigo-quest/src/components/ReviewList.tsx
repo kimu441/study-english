@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { BookmarkX, Play, Volume2 } from 'lucide-react';
 import type { Card, Deck } from '../types';
 import Segmented from './ui/Segmented';
-import { DECK_META, LEVEL_LABEL, sourceLabel } from '../data/decks';
+import { DECK_META, cardTag, levelLabel, sourceLabel } from '../data/decks';
 import { REVIEW_CLEAR_STREAK } from '../lib/review';
 import { speak } from '../lib/sound';
 
@@ -95,10 +95,10 @@ export default function ReviewList({ cards, onStart, onRemove }: Props) {
                 <div className="text-sm font-bold text-slate-500">{c.prompt}</div>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-extrabold text-slate-400">
                   <span className="rounded-full bg-purple-100 px-2 py-0.5 text-purple-600">
-                    {c.book === 'toeic' ? LEVEL_LABEL[c.level] : sourceLabel(c)}
+                    {levelLabel(c)}
                   </span>
                   <span>
-                    {sourceLabel(c)}・{c.no !== undefined ? `No.${c.no}` : c.category}
+                    {sourceLabel(c)}・{cardTag(c)}
                   </span>
                   <span className="text-rose-500">ミス {c.missCount}回</span>
                   <span className="flex items-center gap-0.5" title="連続正解">

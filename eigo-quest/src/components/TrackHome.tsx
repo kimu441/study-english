@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Keyboard, Mic } from 'lucide-react';
 import type { BookId, Card, ComposeMode, CustomWord, Deck, Stage, WordLevel } from '../types';
 import ReviewWidget from './ReviewWidget';
 import PathMap from './PathMap';
 import CustomWordsPanel from './CustomWordsPanel';
+import ComposeModePicker from './ComposeModePicker';
 import TodayGoal from './plan/TodayGoal';
 import Segmented from './ui/Segmented';
 import { BOOK_META, DECK_META, LEVELS, LEVEL_LABEL, WORD_BOOKS } from '../data/decks';
@@ -11,7 +11,7 @@ import { todayStr } from '../lib/srs';
 import { getStageStates, isDue, isWeak } from '../lib/stats';
 import type { SessionMode } from '../lib/session';
 import { readPref, writePref } from '../lib/storage';
-import { stageGoal, type PlanSummary } from '../lib/plan';
+import { scopeKey, stageGoal, type PlanSummary } from '../lib/plan';
 
 interface Props {
   deck: Deck;
@@ -78,8 +78,8 @@ export default function TrackHome({
   const states = useMemo(() => getStageStates(levelStages, levelCards), [levelStages, levelCards]);
 
   // 表示中の単語帳・レベルが学習計画のどの範囲にあたるか
-  const scopeKey = book === 'toeic' ? (`${deck}:${level}` as const) : book;
-  const progress = planSummary?.scopes.find((s) => s.key === scopeKey) ?? null;
+  const scope = scopeKey(deck, book, level);
+  const progress = planSummary?.scopes.find((s) => s.key === scope) ?? null;
   const goal = useMemo(() => (progress ? stageGoal(levelStages, levelCards, progress) : null), [progress, levelStages, levelCards]);
 
   const dueCount = levelCards.filter((c) => isDue(c, today)).length;
@@ -108,29 +108,7 @@ export default function TrackHome({
       {book === 'custom' && onSaveCustomWords && <CustomWordsPanel words={customWords} onSave={onSaveCustomWords} />}
 
       {deck === 'composition' && composeMode && onComposeModeChange && (
-        <div className="rounded-2xl border-2 border-slate-200 p-3">
-          <div className="mb-2 text-xs font-extrabold text-slate-400">解答方法</div>
-          <div className="grid grid-cols-2 gap-2">
-            {([
-              ['oral', '口頭で言う', '答えを見て自己判定', Mic],
-              ['type', '入力する', '英文をタイピング', Keyboard],
-            ] as const).map(([m, label, sub, Icon]) => (
-              <button
-                key={m}
-                onClick={() => onComposeModeChange(m)}
-                className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-left ${
-                  composeMode === m ? 'border-sky-400 bg-sky-50 text-sky-600' : 'border-slate-200 text-slate-400'
-                }`}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span>
-                  <span className="block text-sm font-black">{label}</span>
-                  <span className="block text-[11px] font-bold opacity-80">{sub}</span>
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <ComposeModePicker value={composeMode} onChange={onComposeModeChange} />
       )}
 
       {levelCards.length > 0 && (

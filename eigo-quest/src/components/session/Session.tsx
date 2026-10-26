@@ -4,7 +4,8 @@ import type { Card, ComposeMode, Rating } from '../../types';
 import { calcXp } from '../../lib/srs';
 import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../../lib/session';
 import { isSoundOn, setSoundOn, sfx, speak } from '../../lib/sound';
-import { BOOK_META, DECK_META, LEVEL_LABEL, WORD_DIRECTION } from '../../data/decks';
+import { BOOK_META, DECK_META, WORD_DIRECTION, cardTag, levelLabel } from '../../data/decks';
+import { BTN_PRIMARY } from '../ui/styles';
 import SessionResult, { type SessionTotals } from './SessionResult';
 import AnswerSheet from './AnswerSheet';
 
@@ -153,14 +154,14 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
         <div className="mb-3 flex items-center gap-2">
           <span className={`rounded-full px-3 py-1 text-xs font-black ${reason.cls}`}>{reason.label}</span>
           <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-black text-purple-600">
-            {card.book === 'toeic' ? LEVEL_LABEL[card.level] : BOOK_META[card.book].short}
+            {levelLabel(card)}
           </span>
           {card.inReviewList && item.reason !== 'review' && (
             <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-600">復習リスト</span>
           )}
           <span className="truncate text-xs font-extrabold text-slate-400">
             {card.deck === 'word' ? `${BOOK_META[card.book].label} 単語` : DECK_META[card.deck].label}・
-            {card.no !== undefined ? `No.${card.no}` : card.category}
+            {cardTag(card)}
           </span>
         </div>
         <h2 className="mb-5 text-xl font-black text-slate-700">
@@ -271,7 +272,7 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
             <button
               onClick={() => check()}
               disabled={!oral && !canCheck}
-              className="flex-1 rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white transition active:translate-y-0.5 active:border-b-2 disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-400"
+              className={`${BTN_PRIMARY} flex-1 py-3.5 text-lg`}
             >
               {oral ? (
                 <span className="flex items-center justify-center gap-2">
@@ -300,7 +301,7 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
               </button>
               <button
                 onClick={() => judge(true)}
-                className="rounded-2xl border-b-4 border-green-700 bg-green-500 py-3.5 text-lg font-black text-white active:translate-y-0.5 active:border-b-2"
+                className={`${BTN_PRIMARY} py-3.5 text-lg`}
               >
                 言えた
               </button>

@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { DayPlan } from '../../lib/plan';
-import { QUEST_SIZE } from '../../lib/plan';
-import { formatDateJa, toDateStr } from '../../lib/srs';
+import { questsFor, type DayPlan } from '../../lib/plan';
+import { WEEKDAYS, formatDateJa, toDateStr } from '../../lib/srs';
 
 interface Props {
   today: string;
@@ -10,8 +9,6 @@ interface Props {
   /** 指定した日付の予定・実績を返す */
   getDays: (dates: string[]) => DayPlan[];
 }
-
-const WEEK = ['日', '月', '火', '水', '木', '金', '土'];
 
 /** 月の日付（日曜始まりの週で埋める。前後の月の日は null） */
 function monthCells(year: number, month: number): (string | null)[] {
@@ -47,7 +44,7 @@ function detail(d: DayPlan) {
       return '総復習期間。新出は入れず、復習リストと今日の復習を中心に。';
     case 'learn':
       return d.plannedNew > 0
-        ? `新出 ${d.plannedNew}問（クエスト ${Math.ceil(d.plannedNew / QUEST_SIZE)}回）＋ 復習日の問題`
+        ? `新出 ${d.plannedNew}問（クエスト ${questsFor(d.plannedNew)}回）＋ 復習日の問題`
         : '新出は完了予定。復習日の問題を解こう。';
     case 'past':
       return d.answers > 0 ? `${d.answers}問に回答（新出 ${d.actualNew}問）` : '学習記録なし';
@@ -101,7 +98,7 @@ export default function PlanCalendar({ today, examDate, getDays }: Props) {
       </div>
 
       <div className="grid grid-cols-7 gap-1 text-center">
-        {WEEK.map((w, i) => (
+        {WEEKDAYS.map((w, i) => (
           <div key={w} className={`pb-1 text-[11px] font-black ${i === 0 ? 'text-red-400' : i === 6 ? 'text-sky-400' : 'text-slate-400'}`}>
             {w}
           </div>

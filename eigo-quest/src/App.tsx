@@ -29,6 +29,7 @@ const TABS = [
 const COMPOSE_MODE_KEY = 'eigo-quest:compose-mode';
 const loadComposeMode = (): ComposeMode => (readPref(COMPOSE_MODE_KEY) === 'type' ? 'type' : 'oral');
 
+const isDeck = (t: Tab): t is Deck => t === 'word' || t === 'composition';
 
 export default function App() {
   const { cards, logs, plan, customWords, answerCard, removeFromReview, setPlan, saveCustomWords, reset, loadDemo } = useStore();
@@ -38,11 +39,9 @@ export default function App() {
 
   const today = todayStr();
   const stages = useMemo(() => getStages(customWords), [customWords]);
-  const wordStages = useMemo(() => stages.filter((s) => s.deck === 'word'), [stages]);
-  const compositionStages = useMemo(() => stages.filter((s) => s.deck === 'composition'), [stages]);
   const stageOrder = useMemo(() => Object.fromEntries(stages.map((s, i) => [s.id, i])), [stages]);
-  const wordCards = useMemo(() => cards.filter((c) => c.deck === 'word'), [cards]);
-  const compositionCards = useMemo(() => cards.filter((c) => c.deck === 'composition'), [cards]);
+  const deckStages = useMemo(() => stages.filter((s) => s.deck === tab), [stages, tab]);
+  const deckCards = useMemo(() => cards.filter((c) => c.deck === tab), [cards, tab]);
   const reviewCount = cards.filter((c) => c.inReviewList).length;
 
   const streak = useMemo(() => getStreak(logs, today), [logs, today]);
@@ -77,32 +76,23 @@ export default function App() {
     <div className="min-h-screen bg-white">
       <Header streak={streak.current} studiedToday={streak.studiedToday} xpToday={xpToday} />
       <main className="mx-auto max-w-xl space-y-6 px-4 pb-28 pt-5">
-        {(tab === 'word' || tab === 'composition') && <PlanBanner summary={planSummary} onOpen={() => setTab('plan')} />}
-        {tab === 'word' && (
-          <TrackHome
-            key="word"
-            deck="word"
-            stages={wordStages}
-            cards={wordCards}
-            onStart={start}
-            planSummary={planSummary}
-            onOpenPlan={() => setTab('plan')}
-            customWords={customWords}
-            onSaveCustomWords={saveCustomWords}
-          />
-        )}
-        {tab === 'composition' && (
-          <TrackHome
-            key="composition"
-            deck="composition"
-            stages={compositionStages}
-            cards={compositionCards}
-            onStart={start}
-            planSummary={planSummary}
-            onOpenPlan={() => setTab('plan')}
-            composeMode={composeMode}
-            onComposeModeChange={changeComposeMode}
-          />
+        {isDeck(tab) && (
+          <>
+            <PlanBanner summary={planSummary} onOpen={() => setTab('plan')} />
+            <TrackHome
+              key={tab}
+              deck={tab}
+              stages={deckStages}
+              cards={deckCards}
+              onStart={start}
+              planSummary={planSummary}
+              onOpenPlan={() => setTab('plan')}
+              customWords={customWords}
+              onSaveCustomWords={saveCustomWords}
+              composeMode={composeMode}
+              onComposeModeChange={changeComposeMode}
+            />
+          </>
         )}
         {tab === 'review' && <ReviewList cards={cards} onStart={(pool) => start(pool, 'review')} onRemove={removeFromReview} />}
         {tab === 'plan' && <PlanView cards={cards} logs={logs} plan={plan} today={today} onSave={setPlan} onGo={setTab} />}

@@ -1,3 +1,6 @@
+/** 先頭の BOM（Excel などで保存した CSV に付く）を取り除く */
+export const stripBom = (text: string) => text.replace(/^\uFEFF/, '');
+
 /** ダブルクォート対応の簡易CSVパーサー（空行は除く） */
 export function parseCsv(text: string): string[][] {
   const rows: string[][] = [];

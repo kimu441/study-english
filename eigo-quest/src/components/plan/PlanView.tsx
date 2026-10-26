@@ -1,9 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import { BookOpen, CalendarClock, MessageSquareText, Pencil, Swords, TrendingUp } from 'lucide-react';
 import type { Card, Deck, ReviewLog, ScopeKey, StudyPlan } from '../../types';
-import PlanForm, { scopeLabel } from './PlanForm';
+import PlanForm from './PlanForm';
 import PlanCalendar from './PlanCalendar';
-import { ALL_SCOPES, QUEST_SIZE, computePlan, planDays, scopeOf } from '../../lib/plan';
+import ProgressBar from '../ui/ProgressBar';
+import { BTN_PRIMARY } from '../ui/styles';
+import { ALL_SCOPES, QUEST_SIZE, computePlan, planDays, scopeLabel, scopeOf, todayNewPct } from '../../lib/plan';
 import { formatDateJa } from '../../lib/srs';
 
 interface Props {
@@ -115,12 +117,7 @@ export default function PlanView({ cards, logs, plan, today, onSave, onGo }: Pro
               <div className="text-[11px] font-bold text-purple-500">今日が復習日 残り{s.dueToday}問</div>
             </div>
           </div>
-          <div className="mt-3 h-3 overflow-hidden rounded-full bg-slate-200">
-            <div
-              className="h-full rounded-full bg-sky-500 transition-all duration-700"
-              style={{ width: `${s.dailyNew ? Math.min(100, (s.todayNew / s.dailyNew) * 100) : 100}%` }}
-            />
-          </div>
+          <ProgressBar pct={todayNewPct(s)} className="mt-3 h-3 bg-slate-200" barClass="bg-sky-500 transition-all duration-700" />
           <p className="mt-2 text-sm font-bold text-slate-500">
             {s.remaining === 0
               ? '範囲の新出はすべて学習済み！復習で定着させよう。'
@@ -133,7 +130,7 @@ export default function PlanView({ cards, logs, plan, today, onSave, onGo }: Pro
               <button
                 key={d}
                 onClick={() => onGo(d)}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-b-4 border-green-700 bg-green-500 py-2.5 text-sm font-black text-white active:translate-y-0.5 active:border-b-2"
+                className={`${BTN_PRIMARY} flex flex-1 items-center justify-center gap-1.5 py-2.5 text-sm`}
               >
                 {d === 'word' ? <BookOpen className="h-4 w-4" /> : <MessageSquareText className="h-4 w-4" />}
                 {d === 'word' ? '単語へ' : '瞬間英作文へ'}
@@ -151,16 +148,12 @@ export default function PlanView({ cards, logs, plan, today, onSave, onGo }: Pro
             {s.done} / {s.total}問（{coverage}%）
           </span>
         </div>
-        <div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-200">
-          <div className="h-full rounded-full bg-green-500 transition-all duration-700" style={{ width: `${coverage}%` }} />
-        </div>
+        <ProgressBar pct={coverage} className="mt-2 h-3 bg-slate-200" barClass="bg-green-500 transition-all duration-700" />
         <div className="mt-3 space-y-2">
           {s.scopes.map((sc) => (
             <div key={sc.key} className="flex items-center gap-2 text-xs font-extrabold text-slate-500">
               <span className="w-24 shrink-0">{scopeLabel(sc.key)}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
-                <div className="h-full rounded-full bg-green-400" style={{ width: `${sc.total ? (sc.done / sc.total) * 100 : 0}%` }} />
-              </div>
+              <ProgressBar pct={sc.total ? (sc.done / sc.total) * 100 : 0} className="h-2 flex-1 bg-slate-100" barClass="bg-green-400" />
               <span className="w-16 shrink-0 text-right">
                 {sc.done}/{sc.total}
               </span>

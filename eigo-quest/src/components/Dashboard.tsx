@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Award, Flame, Target, Trophy, Zap } from 'lucide-react';
 import type { Card, Deck, ReviewLog } from '../types';
 import Segmented from './ui/Segmented';
+import ProgressBar from './ui/ProgressBar';
 import { DECKS, DECK_META } from '../data/decks';
-import { addDays, todayStr } from '../lib/srs';
+import { WEEKDAYS, addDays, todayStr } from '../lib/srs';
 import { dayStats, getStreak, statusBreakdown } from '../lib/stats';
 
 interface Props {
@@ -96,9 +97,11 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
             <span>次の目標：{next}日連続</span>
             <span>あと{Math.max(0, next - streak.current)}日</span>
           </div>
-          <div className="h-3 overflow-hidden rounded-full bg-black/20">
-            <div className="h-full rounded-full bg-yellow-300 transition-all duration-700" style={{ width: `${Math.min(100, (streak.current / next) * 100)}%` }} />
-          </div>
+          <ProgressBar
+            pct={Math.min(100, (streak.current / next) * 100)}
+            className="h-3 bg-black/20"
+            barClass="bg-yellow-300 transition-all duration-700"
+          />
         </div>
       </section>
 
@@ -123,9 +126,7 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
             <span className="text-lg font-black text-green-600">Lv.{lv}</span>
             <span className="text-xs font-extrabold text-slate-400">次のレベルまで {100 - lvPct} XP</span>
           </div>
-          <div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-200">
-            <div className="h-full rounded-full bg-green-500 transition-all duration-700" style={{ width: `${lvPct}%` }} />
-          </div>
+          <ProgressBar pct={lvPct} className="mt-2 h-3 bg-slate-200" barClass="bg-green-500 transition-all duration-700" />
         </div>
       </section>
 
@@ -146,7 +147,7 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
         <div ref={scrollRef} className="overflow-x-auto pb-2">
           <div className="flex w-max gap-1">
             <div className="mr-1 flex flex-col gap-1 pt-5 text-[10px] font-bold text-slate-400">
-              {['日', '月', '火', '水', '木', '金', '土'].map((d, i) => (
+              {WEEKDAYS.map((d, i) => (
                 <div key={d} className="flex h-4 items-center">{i % 2 === 1 ? d : ''}</div>
               ))}
             </div>
@@ -224,9 +225,7 @@ export default function Dashboard({ cards, logs, onDemo, onReset }: Props) {
                       {unit} ({pct}%)
                     </span>
                   </div>
-                  <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-slate-100">
-                    <div className={`h-full rounded-full ${s.bar}`} style={{ width: `${pct}%` }} />
-                  </div>
+                  <ProgressBar pct={pct} className="mt-1 h-2.5 bg-slate-100" barClass={s.bar} />
                 </div>
               );
             })}

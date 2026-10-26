@@ -1,5 +1,5 @@
-import type { Card, ReviewLog, ScopeKey, Stage, StudyPlan } from '../types';
-import { LEVELS } from '../data/decks';
+import type { BookId, Card, Deck, ReviewLog, ScopeKey, Stage, StudyPlan, WordLevel } from '../types';
+import { BOOK_META, DECK_META, LEVELS, LEVEL_LABEL } from '../data/decks';
 import { addDays, diffDays } from './srs';
 import { isDue } from './stats';
 import { SESSION_SIZE } from './session';
@@ -18,7 +18,28 @@ export const ALL_SCOPES: ScopeKey[] = [
   ...LEVELS.map((l) => `composition:${l}` as const),
 ];
 /** TOEIC Bridge の単語・英作文はレベル別、それ以外の単語帳は単語帳ごとに1つの範囲 */
-export const scopeOf = (c: Card): ScopeKey => (c.book === 'toeic' ? `${c.deck}:${c.level}` : c.book);
+export const scopeKey = (deck: Deck, book: BookId, level: WordLevel): ScopeKey =>
+  book === 'toeic' ? `${deck}:${level}` : book;
+export const scopeOf = (c: Card): ScopeKey => scopeKey(c.deck, c.book, c.level);
+
+/** 範囲の表示名（「TOEIC・中学」「高校必修800」など） */
+export function scopeLabel(key: ScopeKey) {
+  if (key === 'core800' || key === 'custom') return BOOK_META[key].label;
+  const [deck, level] = key.split(':') as [Deck, WordLevel];
+  return `${deck === 'word' ? BOOK_META.toeic.short : DECK_META[deck].short}・${LEVEL_LABEL[level]}`;
+}
+
+/** 新出 n 問を終えるのに必要なクエスト（レッスン）の回数 */
+export const questsFor = (n: number) => Math.ceil(n / QUEST_SIZE);
+
+/** 今日の新出の達成率（%）。目標が 0 なら 100 */
+export const todayNewPct = (p: { todayNew: number; dailyNew: number }) =>
+  p.dailyNew ? Math.min(100, (p.todayNew / p.dailyNew) * 100) : 100;
+
+const cardsInScope = (cards: Card[], plan: StudyPlan) => {
+  const scope = new Set(plan.scope);
+  return cards.filter((c) => scope.has(scopeOf(c)));
+};
 
 /** 各カードを初めて学習した日（cardId → YYYY-MM-DD） */
 export function firstStudyDates(logs: ReviewLog[]): Map<string, string> {
@@ -86,8 +107,7 @@ export interface PlanSummary {
  *  - 総復習期間に入っても新出が残っていれば、試験前日までで割り直す
  */
 export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, today: string): PlanSummary {
-  const scope = new Set(plan.scope);
-  const inScope = cards.filter((c) => scope.has(scopeOf(c)));
+  const inScope = cardsInScope(cards, plan);
   const first = firstStudyDates(logs);
 
   const daysLeft = diffDays(plan.examDate, today);
@@ -130,7 +150,7 @@ export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, t
     done,
     remaining,
     dailyNew,
-    dailyQuests: Math.ceil(dailyNew / QUEST_SIZE),
+    dailyQuests: questsFor(dailyNew),
     todayNew,
     dueToday,
     reviewQuests: Math.ceil(dueToday / REVIEW_QUEST_SIZE),
@@ -155,12 +175,13 @@ export interface StageGoal {
 export function stageGoal(stages: Stage[], cards: Card[], progress: ScopeProgress): StageGoal | null {
   if (progress.dailyNew === 0 || stages.length === 0) return null;
   const target = progress.done - progress.todayNew + progress.dailyNew;
+  const left = Math.max(0, progress.dailyNew - progress.todayNew);
   let cumulative = 0;
   for (const [index, stage] of stages.entries()) {
     cumulative += cards.filter((c) => c.stageId === stage.id).length;
-    if (cumulative >= target) return { stage, index, left: Math.max(0, progress.dailyNew - progress.todayNew) };
+    if (cumulative >= target) return { stage, index, left };
   }
-  return { stage: stages[stages.length - 1], index: stages.length - 1, left: Math.max(0, progress.dailyNew - progress.todayNew) };
+  return { stage: stages[stages.length - 1], index: stages.length - 1, left };
 }
 
 /** カレンダー表示用に、指定した日付それぞれの予定と実績を返す */
@@ -172,8 +193,7 @@ export function planDays(
   logs: ReviewLog[],
   today: string,
 ): DayPlan[] {
-  const scope = new Set(plan.scope);
-  const inScope = new Set(cards.filter((c) => scope.has(scopeOf(c))).map((c) => c.id));
+  const inScope = new Set(cardsInScope(cards, plan).map((c) => c.id));
   const newByDate = new Map<string, number>();
   for (const [id, d] of firstStudyDates(logs)) if (inScope.has(id)) newByDate.set(d, (newByDate.get(d) ?? 0) + 1);
   const answersByDate = new Map<string, number>();

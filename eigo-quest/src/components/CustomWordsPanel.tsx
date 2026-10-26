@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ChangeEvent } from 'react';
 import { FileUp, ListPlus, Plus, Trash2, X } from 'lucide-react';
 import type { CustomWord } from '../types';
 import Segmented from './ui/Segmented';
-import { mergeCustomWords, parseWordList, type WordInput } from '../lib/customWords';
+import { BTN_PRIMARY, choiceClass } from './ui/styles';
+import { byNo, mergeCustomWords, parseWordList, type WordInput } from '../lib/customWords';
 
 interface Props {
   words: CustomWord[];
@@ -13,6 +14,8 @@ type Mode = 'closed' | 'add' | 'import' | 'list';
 
 const INPUT = 'w-full rounded-xl border-2 border-slate-200 bg-slate-50 px-3 py-2 font-bold text-slate-700 outline-none focus:border-sky-400';
 const SAMPLE = '1,example,例,This is an example.,これは例です。\n2,practice,練習する';
+const EMPTY_FORM = { no: '', english: '', japanese: '', example: '', exampleJa: '' };
+const isNumber = (s: string) => /^\d+$/.test(s.trim());
 
 /** マイ単語帳: 1語ずつの追加・CSV取り込み・一覧と削除 */
 export default function CustomWordsPanel({ words, onSave }: Props) {
@@ -47,9 +50,7 @@ export default function CustomWordsPanel({ words, onSave }: Props) {
           <button
             key={m}
             onClick={() => toggle(m)}
-            className={`flex flex-col items-center gap-0.5 rounded-xl border-2 py-2 text-xs font-black ${
-              mode === m ? 'border-sky-400 bg-sky-50 text-sky-600' : 'border-slate-200 text-slate-400'
-            }`}
+            className={`flex flex-col items-center gap-0.5 rounded-xl border-2 py-2 text-xs font-black ${choiceClass(mode === m)}`}
           >
             <Icon className="h-5 w-5" />
             {label}
@@ -65,31 +66,33 @@ export default function CustomWordsPanel({ words, onSave }: Props) {
 }
 
 function AddForm({ onAdd }: { onAdd: (w: WordInput) => void }) {
-  const [no, setNo] = useState('');
-  const [english, setEnglish] = useState('');
-  const [japanese, setJapanese] = useState('');
-  const [example, setExample] = useState('');
-  const [exampleJa, setExampleJa] = useState('');
-  const valid = /[a-z]/i.test(english) && japanese.trim() !== '';
+  const [form, setForm] = useState(EMPTY_FORM);
+  const field = (k: keyof typeof EMPTY_FORM) => ({
+    value: form[k],
+    onChange: (e: ChangeEvent<HTMLInputElement>) => setForm((f) => ({ ...f, [k]: e.target.value })),
+  });
+  const valid = /[a-z]/i.test(form.english) && form.japanese.trim() !== '';
 
   const submit = () => {
     if (!valid) return;
-    onAdd({ no: /^\d+$/.test(no.trim()) ? Number(no) : null, english: english.trim(), japanese: japanese.trim(), example: example.trim(), exampleJa: exampleJa.trim() });
+    const no = isNumber(form.no) ? Number(form.no) : null;
+    onAdd({
+      no,
+      english: form.english.trim(),
+      japanese: form.japanese.trim(),
+      example: form.example.trim(),
+      exampleJa: form.exampleJa.trim(),
+    });
     // 続けて入力しやすいよう、番号は1つ進めて残す
-    setNo(/^\d+$/.test(no.trim()) ? String(Number(no) + 1) : '');
-    setEnglish('');
-    setJapanese('');
-    setExample('');
-    setExampleJa('');
+    setForm({ ...EMPTY_FORM, no: no !== null ? String(no + 1) : '' });
   };
 
   return (
     <div className="mt-4 space-y-2">
       <div className="flex gap-2">
-        <input value={no} onChange={(e) => setNo(e.target.value)} inputMode="numeric" placeholder="番号" className={`${INPUT} w-20 shrink-0`} />
+        <input {...field('no')} inputMode="numeric" placeholder="番号" className={`${INPUT} w-20 shrink-0`} />
         <input
-          value={english}
-          onChange={(e) => setEnglish(e.target.value)}
+          {...field('english')}
           placeholder="英語（例: develop）"
           autoCapitalize="off"
           autoComplete="off"
@@ -97,14 +100,10 @@ function AddForm({ onAdd }: { onAdd: (w: WordInput) => void }) {
           className={INPUT}
         />
       </div>
-      <input value={japanese} onChange={(e) => setJapanese(e.target.value)} placeholder="日本語の意味（例: 発達させる）" className={INPUT} />
-      <input value={example} onChange={(e) => setExample(e.target.value)} placeholder="例文（任意）" className={INPUT} />
-      <input value={exampleJa} onChange={(e) => setExampleJa(e.target.value)} placeholder="例文の訳（任意）" className={INPUT} />
-      <button
-        onClick={submit}
-        disabled={!valid}
-        className="w-full rounded-2xl border-b-4 border-green-700 bg-green-500 py-2.5 font-black text-white active:translate-y-0.5 active:border-b-2 disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-400"
-      >
+      <input {...field('japanese')} placeholder="日本語の意味（例: 発達させる）" className={INPUT} />
+      <input {...field('example')} placeholder="例文（任意）" className={INPUT} />
+      <input {...field('exampleJa')} placeholder="例文の訳（任意）" className={INPUT} />
+      <button onClick={submit} disabled={!valid} className={`${BTN_PRIMARY} w-full py-2.5`}>
         追加する
       </button>
       <p className="text-[11px] font-bold text-slate-400">同じ英語の単語がすでにあれば上書きされます。</p>
@@ -149,7 +148,7 @@ function ImportForm({ onImport }: { onImport: (words: WordInput[]) => void }) {
           setText('');
         }}
         disabled={parsed.words.length === 0}
-        className="w-full rounded-2xl border-b-4 border-green-700 bg-green-500 py-2.5 font-black text-white active:translate-y-0.5 active:border-b-2 disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-400"
+        className={`${BTN_PRIMARY} w-full py-2.5`}
       >
         取り込む
       </button>
@@ -160,7 +159,7 @@ function ImportForm({ onImport }: { onImport: (words: WordInput[]) => void }) {
 function WordList({ words, onSave }: Props) {
   const [sort, setSort] = useState<'no' | 'added'>('no');
   const shown = useMemo(
-    () => (sort === 'no' ? [...words].sort((a, b) => (a.no ?? Infinity) - (b.no ?? Infinity)) : [...words].reverse()),
+    () => (sort === 'no' ? [...words].sort(byNo) : [...words].reverse()),
     [words, sort],
   );
 

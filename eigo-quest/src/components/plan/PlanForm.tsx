@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { ScopeKey, StudyPlan } from '../../types';
-import { BOOK_META, DECK_META, LEVEL_LABEL } from '../../data/decks';
-import { ALL_SCOPES } from '../../lib/plan';
+import { ALL_SCOPES, scopeLabel } from '../../lib/plan';
 import { addDays, diffDays } from '../../lib/srs';
+import { BTN_PRIMARY, choiceClass } from '../ui/styles';
 
 interface Props {
   initial: StudyPlan | null;
@@ -15,12 +15,6 @@ interface Props {
 }
 
 const REVIEW_OPTIONS = [0, 3, 7];
-
-export function scopeLabel(key: ScopeKey) {
-  if (key === 'core800' || key === 'custom') return BOOK_META[key].label;
-  const [deck, level] = key.split(':') as [keyof typeof DECK_META, keyof typeof LEVEL_LABEL];
-  return `${deck === 'word' ? BOOK_META.toeic.short : DECK_META[deck].short}・${LEVEL_LABEL[level]}`;
-}
 
 /** 試験日・範囲・総復習期間の設定フォーム */
 export default function PlanForm({ initial, today, counts, onSave, onCancel, onDelete }: Props) {
@@ -61,7 +55,7 @@ export default function PlanForm({ initial, today, counts, onSave, onCancel, onD
               <button
                 key={k}
                 onClick={() => toggle(k)}
-                className={`rounded-xl border-2 px-3 py-2 text-left ${on ? 'border-sky-400 bg-sky-50 text-sky-600' : 'border-slate-200 text-slate-400'}`}
+                className={`rounded-xl border-2 px-3 py-2 text-left ${choiceClass(on)}`}
               >
                 <span className="block text-sm font-black">{scopeLabel(k)}</span>
                 <span className="block text-[11px] font-bold opacity-80">{counts[k]}問</span>
@@ -108,7 +102,7 @@ export default function PlanForm({ initial, today, counts, onSave, onCancel, onD
         <button
           disabled={!valid}
           onClick={() => onSave({ examDate, scope, reviewDays })}
-          className="flex-1 rounded-2xl border-b-4 border-green-700 bg-green-500 py-3 text-lg font-black text-white active:translate-y-0.5 active:border-b-2 disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-400"
+          className={`${BTN_PRIMARY} flex-1 py-3 text-lg`}
         >
           この計画で始める
         </button>

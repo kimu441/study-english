@@ -119,9 +119,12 @@ npm run dev
       ├─ CustomWordsPanel.tsx        # マイ単語帳の登録・取り込み・一覧
       ├─ ReviewWidget.tsx            # 今日の復習ウィジェット
       ├─ PathMap.tsx                 # パス型ステージ選択
+      ├─ ComposeModePicker.tsx       # 瞬間英作文の解答方法の切り替え
       ├─ Dashboard.tsx               # 学習データの可視化
       ├─ ui/
-      │  └─ Segmented.tsx            # タブ風の切り替えボタン
+      │  ├─ Segmented.tsx            # タブ風の切り替えボタン
+      │  ├─ ProgressBar.tsx          # 進捗バー
+      │  └─ styles.ts                # 共通のボタン・選択肢のスタイル
       ├─ session/
       │  ├─ Session.tsx              # 学習セッション
       │  ├─ AnswerSheet.tsx          # 正誤・解説と自己評価（SRS 連動）
@@ -130,7 +133,8 @@ npm run dev
          ├─ PlanView.tsx             # 計画タブ
          ├─ PlanForm.tsx             # 試験日・範囲の設定
          ├─ PlanCalendar.tsx         # 月カレンダー
-         └─ PlanBanner.tsx           # 単語・英作文タブ上部のノルマ表示
+         ├─ PlanBanner.tsx           # 単語・英作文タブ上部のノルマ表示
+         └─ TodayGoal.tsx            # マップ上部の今日のゴール
 ```
 
 ## データモデル
