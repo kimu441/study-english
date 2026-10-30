@@ -3,6 +3,7 @@ import { Eye, Volume2, VolumeX, X } from 'lucide-react';
 import type { Card, ComposeMode, Rating, WordMode } from '../../types';
 import { calcXp } from '../../lib/srs';
 import { isAnswerCorrect, shuffle, type SessionItem, type SessionReason } from '../../lib/session';
+import { isMissed } from '../../lib/review';
 import { isSoundOn, setSoundOn, sfx, speak } from '../../lib/sound';
 import { BOOK_META, DECK_META, WORD_DIRECTION, cardTag, levelLabel } from '../../data/decks';
 import { BTN_PRIMARY } from '../ui/styles';
@@ -106,7 +107,7 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
     if (!item || !card || correct === null) return;
     onRecord(card.id, rating, correct);
     sfx.tap();
-    const missed = !correct || rating === 'again';
+    const missed = isMissed(rating, correct);
     setResult((r) => ({
       xp: r.xp + calcXp(rating, correct),
       correct: r.correct + (correct ? 1 : 0),
