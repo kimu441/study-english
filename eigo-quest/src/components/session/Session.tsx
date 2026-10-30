@@ -8,6 +8,8 @@ import { BOOK_META, DECK_META, WORD_DIRECTION, cardTag, levelLabel } from '../..
 import { BTN_PRIMARY } from '../ui/styles';
 import SessionResult, { type SessionTotals } from './SessionResult';
 import AnswerSheet from './AnswerSheet';
+import SessionGoal from './SessionGoal';
+import type { PlanSummary } from '../../lib/plan';
 
 interface Props {
   items: SessionItem[];
@@ -16,6 +18,8 @@ interface Props {
   onExit: () => void;
   composeMode?: ComposeMode;
   wordMode?: WordMode;
+  /** 学習計画（未設定なら null）。回答するたびに更新される */
+  planSummary?: PlanSummary | null;
 }
 
 const REASON: Record<SessionReason, { label: string; cls: string }> = {
@@ -26,7 +30,7 @@ const REASON: Record<SessionReason, { label: string; cls: string }> = {
   extra: { label: '練習', cls: 'bg-slate-100 text-slate-500' },
 };
 
-export default function Session({ items, allCards, onRecord, onExit, composeMode = 'type', wordMode = 'read' }: Props) {
+export default function Session({ items, allCards, onRecord, onExit, composeMode = 'type', wordMode = 'read', planSummary = null }: Props) {
   const [queue, setQueue] = useState<SessionItem[]>(items);
   const [index, setIndex] = useState(0);
   // reveal: 口頭モードで答えを見て、言えたかどうかを自己判定する段階
@@ -160,6 +164,7 @@ export default function Session({ items, allCards, onRecord, onExit, composeMode
 
       {/* 問題エリア */}
       <div className="mx-auto w-full max-w-xl flex-1 overflow-y-auto px-4 pb-72">
+        <SessionGoal summary={planSummary} card={card} />
         <div className="mb-3 flex items-center gap-2">
           <span className={`rounded-full px-3 py-1 text-xs font-black ${reason.cls}`}>{reason.label}</span>
           <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-black text-purple-600">

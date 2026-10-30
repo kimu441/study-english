@@ -77,6 +77,7 @@ export default function App() {
         onExit={() => setSession(null)}
         composeMode={composeMode}
         wordMode={wordMode}
+        planSummary={planSummary}
       />
     );
   }
