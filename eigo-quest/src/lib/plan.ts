@@ -32,6 +32,9 @@ export function scopeLabel(key: ScopeKey) {
 /** 新出 n 問を終えるのに必要なクエスト（レッスン）の回数 */
 export const questsFor = (n: number) => Math.ceil(n / QUEST_SIZE);
 
+/** 今日の新出の残り（目標を超えて解いた分はマイナスにしない） */
+export const newLeftOf = (p: { todayNew: number; dailyNew: number }) => Math.max(0, p.dailyNew - p.todayNew);
+
 /** 今日の新出の達成率（%）。目標が 0 なら 100 */
 export const todayNewPct = (p: { todayNew: number; dailyNew: number }) =>
   p.dailyNew ? Math.min(100, (p.todayNew / p.dailyNew) * 100) : 100;
@@ -137,7 +140,7 @@ export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, t
   const remaining = total - done;
   const todayNew = sum((s) => s.todayNew);
   const dailyNew = sum((s) => s.dailyNew);
-  const newLeft = sum((s) => Math.max(0, s.dailyNew - s.todayNew));
+  const newLeft = sum(newLeftOf);
 
   const dueToday = inScope.filter((c) => isDue(c, today)).length;
 
@@ -186,7 +189,7 @@ export interface StageGoal {
 export function stageGoal(stages: Stage[], cards: Card[], progress: ScopeProgress): StageGoal | null {
   if (progress.dailyNew === 0 || stages.length === 0) return null;
   const target = progress.done - progress.todayNew + progress.dailyNew;
-  const left = Math.max(0, progress.dailyNew - progress.todayNew);
+  const left = newLeftOf(progress);
   let cumulative = 0;
   for (const [index, stage] of stages.entries()) {
     cumulative += cards.filter((c) => c.stageId === stage.id).length;

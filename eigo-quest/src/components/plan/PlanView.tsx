@@ -5,13 +5,15 @@ import PlanForm from './PlanForm';
 import PlanCalendar from './PlanCalendar';
 import ProgressBar from '../ui/ProgressBar';
 import { BTN_PRIMARY } from '../ui/styles';
-import { ALL_SCOPES, QUEST_SIZE, computePlan, planDays, scopeLabel, scopeOf, todayNewPct } from '../../lib/plan';
+import { ALL_SCOPES, QUEST_SIZE, newLeftOf, planDays, scopeLabel, scopeOf, todayNewPct, type PlanSummary } from '../../lib/plan';
 import { formatDateJa } from '../../lib/srs';
 
 interface Props {
   cards: Card[];
   logs: ReviewLog[];
   plan: StudyPlan | null;
+  /** plan から計算した学習計画（plan が null なら null） */
+  summary: PlanSummary | null;
   today: string;
   onSave: (plan: StudyPlan | null) => void;
   /** 単語 / 瞬間英作文 のタブへ移動 */
@@ -19,7 +21,7 @@ interface Props {
 }
 
 /** 計画タブ: 試験日までのカウントダウン・今日のクエスト・ペース・カレンダー */
-export default function PlanView({ cards, logs, plan, today, onSave, onGo }: Props) {
+export default function PlanView({ cards, logs, plan, summary, today, onSave, onGo }: Props) {
   const [editing, setEditing] = useState(false);
 
   const counts = useMemo(() => {
@@ -28,7 +30,6 @@ export default function PlanView({ cards, logs, plan, today, onSave, onGo }: Pro
     return r;
   }, [cards]);
 
-  const summary = useMemo(() => (plan ? computePlan(cards, logs, plan, today) : null), [cards, logs, plan, today]);
   const getDays = useCallback(
     (dates: string[]) => (plan && summary ? planDays(dates, summary, plan, cards, logs, today) : []),
     [plan, summary, cards, logs, today],
@@ -123,7 +124,7 @@ export default function PlanView({ cards, logs, plan, today, onSave, onGo }: Pro
               ? '範囲の新出はすべて学習済み！復習で定着させよう。'
               : newDone
                 ? '今日の新出ノルマ達成！余裕があれば復習もしよう。'
-                : `あと新出${s.dailyNew - s.todayNew}問。マップの新しいステージから進めよう。`}
+                : `あと新出${newLeftOf(s)}問。マップの新しいステージから進めよう。`}
           </p>
           <div className="mt-3 flex gap-2">
             {decks.map((d) => (

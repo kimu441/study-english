@@ -15,7 +15,7 @@ import { todayStr } from './lib/srs';
 import { dayStats, getStreak } from './lib/stats';
 import { pickSessionCards, type SessionItem, type SessionMode } from './lib/session';
 import { computePlan } from './lib/plan';
-import { readPref, writePref } from './lib/storage';
+import { usePref } from './lib/usePref';
 
 type Tab = Deck | 'review' | 'plan' | 'dashboard';
 
@@ -28,17 +28,17 @@ const TABS = [
 ] as const;
 
 const COMPOSE_MODE_KEY = 'eigo-quest:compose-mode';
-const loadComposeMode = (): ComposeMode => (readPref(COMPOSE_MODE_KEY) === 'type' ? 'type' : 'oral');
+const parseComposeMode = (v: string | null): ComposeMode => (v === 'type' ? 'type' : 'oral');
 const WORD_MODE_KEY = 'eigo-quest:word-mode';
-const loadWordMode = (): WordMode => (readPref(WORD_MODE_KEY) === 'listen' ? 'listen' : 'read');
+const parseWordMode = (v: string | null): WordMode => (v === 'listen' ? 'listen' : 'read');
 
 const isDeck = (t: Tab): t is Deck => t === 'word' || t === 'composition';
 
 export default function App() {
   const { cards, logs, plan, customWords, answerCard, removeFromReview, setPlan, saveCustomWords, reset, loadDemo } = useStore();
   const [tab, setTab] = useState<Tab>('word');
-  const [composeMode, setComposeMode] = useState<ComposeMode>(loadComposeMode);
-  const [wordMode, setWordMode] = useState<WordMode>(loadWordMode);
+  const [composeMode, changeComposeMode] = usePref(COMPOSE_MODE_KEY, parseComposeMode);
+  const [wordMode, changeWordMode] = usePref(WORD_MODE_KEY, parseWordMode);
   const [session, setSession] = useState<{ key: number; items: SessionItem[] } | null>(null);
 
   const today = todayStr();
@@ -56,16 +56,6 @@ export default function App() {
     const items = pickSessionCards(pool, { mode, stageId, stageOrder });
     if (items.length === 0) return;
     setSession({ key: Date.now(), items });
-  };
-
-  const changeComposeMode = (m: ComposeMode) => {
-    setComposeMode(m);
-    writePref(COMPOSE_MODE_KEY, m);
-  };
-
-  const changeWordMode = (m: WordMode) => {
-    setWordMode(m);
-    writePref(WORD_MODE_KEY, m);
   };
 
   if (session) {
@@ -110,7 +100,7 @@ export default function App() {
           </>
         )}
         {tab === 'review' && <ReviewList cards={cards} onStart={(pool) => start(pool, 'review')} onRemove={removeFromReview} />}
-        {tab === 'plan' && <PlanView cards={cards} logs={logs} plan={plan} today={today} onSave={setPlan} onGo={setTab} />}
+        {tab === 'plan' && <PlanView cards={cards} logs={logs} plan={plan} summary={planSummary} today={today} onSave={setPlan} onGo={setTab} />}
         {tab === 'dashboard' && <Dashboard cards={cards} logs={logs} onDemo={loadDemo} onReset={reset} />}
       </main>
 

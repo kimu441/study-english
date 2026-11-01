@@ -1,5 +1,5 @@
 import { CalendarClock, ChevronRight } from 'lucide-react';
-import { questsFor, todayNewPct, type PlanSummary } from '../../lib/plan';
+import { newLeftOf, questsFor, todayNewPct, type PlanSummary } from '../../lib/plan';
 import ProgressBar from '../ui/ProgressBar';
 
 interface Props {
@@ -22,7 +22,7 @@ export default function PlanBanner({ summary: s, onOpen }: Props) {
     );
   }
   if (s.daysLeft <= 0) return null;
-  const done = s.todayNew >= s.dailyNew;
+  const done = newLeftOf(s) === 0;
   return (
     <button onClick={onOpen} className="flex w-full items-center gap-3 rounded-2xl border-2 border-indigo-200 bg-indigo-50 px-4 py-3 text-left">
       <div className="flex shrink-0 flex-col items-center text-indigo-600">
@@ -36,7 +36,7 @@ export default function PlanBanner({ summary: s, onOpen }: Props) {
             ? '新出は全範囲クリア！復習を続けよう'
             : done
               ? '今日の新出ノルマ達成！'
-              : `今日のクエスト：新出 あと${questsFor(s.dailyNew - s.todayNew)}回`}
+              : `今日のクエスト：新出 あと${questsFor(newLeftOf(s))}回`}
         </div>
         <ProgressBar pct={todayNewPct(s)} className="mt-1 h-2 bg-white" barClass="bg-indigo-500" />
         <div className="mt-0.5 text-[11px] font-bold text-slate-400">

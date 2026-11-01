@@ -1,7 +1,8 @@
 import { Flag } from 'lucide-react';
 import type { Card } from '../../types';
 import { DECK_META } from '../../data/decks';
-import { scopeLabel, scopeOf, todayNewPct, type PlanSummary } from '../../lib/plan';
+import { newLeftOf, scopeLabel, scopeOf, todayNewPct, type PlanSummary, type ScopeProgress } from '../../lib/plan';
+import { goalTone } from './goalTone';
 import ProgressBar from '../ui/ProgressBar';
 
 interface Props {
@@ -17,12 +18,12 @@ interface Props {
 export default function TodayLeftBar({ summary: s, card }: Props) {
   if (!s || s.daysLeft <= 0) return null;
   const done = s.todayLeft === 0;
+  const tone = goalTone(done);
   const scope = card ? s.scopes.find((sc) => sc.key === scopeOf(card)) : undefined;
-  const scopeLeft = scope ? Math.max(0, scope.dailyNew - scope.todayNew) : 0;
 
   return (
-    <div className={`rounded-2xl px-3 py-2 ${done ? 'bg-green-50' : 'bg-indigo-50'}`}>
-      <div className={`flex items-center gap-1.5 text-sm font-black ${done ? 'text-green-600' : 'text-indigo-600'}`}>
+    <div className={`rounded-2xl px-3 py-2 ${tone.bg}`}>
+      <div className={`flex items-center gap-1.5 text-sm font-black ${tone.text}`}>
         <Flag className="h-4 w-4 shrink-0" />
         {done ? '今日の分は達成！🎉' : `今日はあと${s.todayLeft}問`}
         <span className="ml-auto shrink-0 text-[11px] font-extrabold text-slate-400">
@@ -32,15 +33,21 @@ export default function TodayLeftBar({ summary: s, card }: Props) {
       <ProgressBar
         pct={todayNewPct(s)}
         className="mt-1.5 h-1.5 bg-white"
-        barClass={`transition-all duration-500 ${done ? 'bg-green-500' : 'bg-indigo-500'}`}
+        barClass={`transition-all duration-500 ${tone.bar}`}
       />
-      {card && scope && scope.dailyNew > 0 && (
-        <div className="mt-1 truncate text-[11px] font-bold text-slate-400">
-          いまの範囲（{scopeLabel(scope.key)}）：新出 {scope.todayNew}/{scope.dailyNew}
-          {DECK_META[card.deck].unit}
-          {scopeLeft > 0 ? `・あと${scopeLeft}${DECK_META[card.deck].unit}` : '・達成'}
-        </div>
-      )}
+      {card && scope && scope.dailyNew > 0 && <ScopeLine scope={scope} unit={DECK_META[card.deck].unit} />}
+    </div>
+  );
+}
+
+/** 解いている問題の範囲の、今日の新出の進み具合 */
+function ScopeLine({ scope, unit }: { scope: ScopeProgress; unit: string }) {
+  const left = newLeftOf(scope);
+  return (
+    <div className="mt-1 truncate text-[11px] font-bold text-slate-400">
+      いまの範囲（{scopeLabel(scope.key)}）：新出 {scope.todayNew}/{scope.dailyNew}
+      {unit}
+      {left > 0 ? `・あと${left}${unit}` : '・達成'}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { BookOpen, Headphones, Keyboard, Mic } from 'lucide-react';
 import type { BookId, Card, ComposeMode, CustomWord, Deck, Stage, WordLevel, WordMode } from '../types';
 import ReviewWidget from './ReviewWidget';
@@ -12,7 +12,7 @@ import { BOOK_META, DECK_META, LEVELS, LEVEL_LABEL, WORD_BOOKS } from '../data/d
 import { todayStr } from '../lib/srs';
 import { getStageStates, isDue, isWeak } from '../lib/stats';
 import type { SessionMode } from '../lib/session';
-import { readPref, writePref } from '../lib/storage';
+import { usePref } from '../lib/usePref';
 import { scopeKey, stageGoal, type PlanSummary } from '../lib/plan';
 
 interface Props {
@@ -36,14 +36,8 @@ interface Props {
 const LEVEL_KEY = (deck: Deck) => `eigo-quest:level:${deck}`;
 const BOOK_KEY = 'eigo-quest:book';
 
-function loadLevel(deck: Deck): WordLevel {
-  return readPref(LEVEL_KEY(deck)) === 'senior' ? 'senior' : 'junior';
-}
-
-function loadBook(): BookId {
-  const v = readPref(BOOK_KEY);
-  return WORD_BOOKS.find((b) => b === v) ?? 'toeic';
-}
+const parseLevel = (v: string | null): WordLevel => (v === 'senior' ? 'senior' : 'junior');
+const parseBook = (v: string | null): BookId => WORD_BOOKS.find((b) => b === v) ?? 'toeic';
 
 const BOOK_OPTIONS = WORD_BOOKS.map((b) => ({ id: b, label: BOOK_META[b].label }));
 
@@ -72,23 +66,16 @@ export default function TrackHome({
   planSummary,
   onOpenPlan,
 }: Props) {
-  const [book, setBook] = useState<BookId>(() => (deck === 'word' ? loadBook() : 'toeic'));
-  const [savedLevel, setLevel] = useState<WordLevel>(() => loadLevel(deck));
+  const [savedBook, changeBook] = usePref(BOOK_KEY, parseBook);
+  const [savedLevel, changeLevel] = usePref(LEVEL_KEY(deck), parseLevel);
+  // 瞬間英作文は TOEIC Bridge のみ
+  const book: BookId = deck === 'word' ? savedBook : 'toeic';
   const today = todayStr();
 
   const bookStages = useMemo(() => stages.filter((s) => s.book === book), [stages, book]);
   // レベルが1つしかない単語帳（高校必修800・マイ単語帳）ではレベル切り替えを出さない
   const levels = LEVELS.filter((l) => bookStages.some((s) => s.level === l));
   const level = levels.includes(savedLevel) ? savedLevel : (levels[0] ?? savedLevel);
-
-  const changeBook = (b: BookId) => {
-    setBook(b);
-    writePref(BOOK_KEY, b);
-  };
-  const changeLevel = (l: WordLevel) => {
-    setLevel(l);
-    writePref(LEVEL_KEY(deck), l);
-  };
 
   const levelStages = useMemo(() => bookStages.filter((s) => s.level === level), [bookStages, level]);
   const levelCards = useMemo(() => cards.filter((c) => c.book === book && c.level === level), [cards, book, level]);

@@ -1,5 +1,6 @@
 import { CalendarClock, Flag } from 'lucide-react';
-import { questsFor, todayNewPct, type PlanSummary, type ScopeProgress, type StageGoal } from '../../lib/plan';
+import { newLeftOf, questsFor, todayNewPct, type PlanSummary, type ScopeProgress, type StageGoal } from '../../lib/plan';
+import { goalTone } from './goalTone';
 import ProgressBar from '../ui/ProgressBar';
 
 interface Props {
@@ -24,13 +25,14 @@ export default function TodayGoal({ summary: s, progress: p, goal, unit, onOpenP
   }
 
   const remaining = p.total - p.done;
-  const done = p.todayNew >= p.dailyNew;
   /** 今日の新出の残り */
-  const left = p.dailyNew - p.todayNew;
+  const left = newLeftOf(p);
+  const done = left === 0;
+  const tone = goalTone(done);
 
   return (
-    <section className={`rounded-3xl border-2 p-4 ${done ? 'border-green-200 bg-green-50' : 'border-indigo-200 bg-indigo-50'}`}>
-      <div className={`flex items-center gap-2 text-sm font-black ${done ? 'text-green-600' : 'text-indigo-600'}`}>
+    <section className={`rounded-3xl border-2 p-4 ${tone.border} ${tone.bg}`}>
+      <div className={`flex items-center gap-2 text-sm font-black ${tone.text}`}>
         <Flag className="h-5 w-5" />
         今日のゴール
         <span className="ml-auto flex items-center gap-1 text-xs font-extrabold text-slate-400">
@@ -57,7 +59,7 @@ export default function TodayGoal({ summary: s, progress: p, goal, unit, onOpenP
           <ProgressBar
             pct={todayNewPct(p)}
             className="mt-2 h-3 bg-white"
-            barClass={`transition-all duration-700 ${done ? 'bg-green-500' : 'bg-indigo-500'}`}
+            barClass={`transition-all duration-700 ${tone.bar}`}
           />
           <p className="mt-1.5 text-xs font-bold text-slate-500">
             今日の新出 {p.todayNew} / {p.dailyNew}
