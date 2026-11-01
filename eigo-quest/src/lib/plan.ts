@@ -62,6 +62,10 @@ export interface DayPlan {
   actualNew: number;
   /** 回答した問題の数（今日以前） */
   answers: number;
+  /** 今日の新出の残り（今日の日付のみ。それ以外は 0） */
+  newLeft: number;
+  /** 今日の復習日の問題の残り（今日の日付のみ。それ以外は 0） */
+  dueLeft: number;
 }
 
 export interface ScopeProgress {
@@ -90,8 +94,12 @@ export interface PlanSummary {
   dailyQuests: number;
   /** 今日初めて学習した数 */
   todayNew: number;
+  /** 今日の新出の残り（範囲ごとの残りの合計。ほかの範囲で多く解いても減らない） */
+  newLeft: number;
   /** 今日復習日の問題数（範囲内） */
   dueToday: number;
+  /** 今日あと何問解けばいいか（新出の残り + 復習日の問題） */
+  todayLeft: number;
   reviewQuests: number;
   /** 直近 PACE_WINDOW 日の1日平均の新出数（今日を除く） */
   recentPace: number;
@@ -129,6 +137,7 @@ export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, t
   const remaining = total - done;
   const todayNew = sum((s) => s.todayNew);
   const dailyNew = sum((s) => s.dailyNew);
+  const newLeft = sum((s) => Math.max(0, s.dailyNew - s.todayNew));
 
   const dueToday = inScope.filter((c) => isDue(c, today)).length;
 
@@ -152,7 +161,9 @@ export function computePlan(cards: Card[], logs: ReviewLog[], plan: StudyPlan, t
     dailyNew,
     dailyQuests: questsFor(dailyNew),
     todayNew,
+    newLeft,
     dueToday,
+    todayLeft: newLeft + dueToday,
     reviewQuests: Math.ceil(dueToday / REVIEW_QUEST_SIZE),
     recentPace,
     projectedFinish,
@@ -204,7 +215,15 @@ export function planDays(
   const learnEnd = summary.inFinalReview ? addDays(plan.examDate, -1) : summary.learnEndDate;
 
   return dates.map((date) => {
-    const base = { date, plannedNew: 0, actualNew: newByDate.get(date) ?? 0, answers: answersByDate.get(date) ?? 0 };
+    const isToday = date === today;
+    const base = {
+      date,
+      plannedNew: 0,
+      actualNew: newByDate.get(date) ?? 0,
+      answers: answersByDate.get(date) ?? 0,
+      newLeft: isToday ? summary.newLeft : 0,
+      dueLeft: isToday ? summary.dueToday : 0,
+    };
     if (date === plan.examDate) return { ...base, kind: 'exam' };
     if (date > plan.examDate) return { ...base, kind: 'after' };
     if (date < today) return { ...base, kind: 'past' };

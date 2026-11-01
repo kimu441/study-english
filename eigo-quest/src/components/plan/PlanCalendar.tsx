@@ -28,15 +28,23 @@ function cellStyle(d: DayPlan, today: string) {
   return 'text-slate-300';
 }
 
-function cellNote(d: DayPlan) {
+/** 今日の残り（新出 + 復習日の問題） */
+const todayLeft = (d: DayPlan) => d.newLeft + d.dueLeft;
+
+function cellNote(d: DayPlan, today: string) {
   if (d.kind === 'exam') return '🎯';
+  if (d.date === today) return todayLeft(d) > 0 ? `あと${todayLeft(d)}` : '達成✓';
   if (d.kind === 'review') return '総復習';
   if (d.kind === 'learn') return d.plannedNew > 0 ? `${d.plannedNew}問` : '復習';
   if (d.kind === 'past' && d.answers > 0) return `✓${d.answers}`;
   return '';
 }
 
-function detail(d: DayPlan) {
+function detail(d: DayPlan, today: string) {
+  if (d.date === today && d.kind !== 'exam') {
+    if (todayLeft(d) === 0) return `今日の分は達成！（${d.answers}問に回答・新出 ${d.actualNew}問）`;
+    return `今日はあと${todayLeft(d)}問（新出 あと${d.newLeft}問・復習日の問題 あと${d.dueLeft}問）。ここまで${d.answers}問に回答・新出 ${d.actualNew}問`;
+  }
   switch (d.kind) {
     case 'exam':
       return '試験日。前日はしっかり休もう。';
@@ -115,7 +123,7 @@ export default function PlanCalendar({ today, examDate, getDays }: Props) {
               }`}
             >
               <span className="text-sm font-black leading-tight">{Number(date.slice(8))}</span>
-              <span className="mt-0.5 text-[10px] font-extrabold leading-tight">{cellNote(d)}</span>
+              <span className="mt-0.5 text-[10px] font-extrabold leading-tight">{cellNote(d, today)}</span>
             </button>
           );
         })}
@@ -130,7 +138,7 @@ export default function PlanCalendar({ today, examDate, getDays }: Props) {
 
       {sel && (
         <p className="mt-3 rounded-2xl bg-slate-50 p-3 text-sm font-bold text-slate-600">
-          <span className="font-black">{formatDateJa(sel.date)}</span>　{detail(sel)}
+          <span className="font-black">{formatDateJa(sel.date)}</span>　{detail(sel, today)}
         </p>
       )}
     </section>

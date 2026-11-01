@@ -1,13 +1,17 @@
 import { Flame, Zap } from 'lucide-react';
 
+import type { ReactNode } from 'react';
+
 interface Props {
+  /** XPバーの下に固定表示するもの（今日あと何問など） */
+  children?: ReactNode;
   streak: number;
   studiedToday: boolean;
   xpToday: number;
   dailyGoal?: number;
 }
 
-export default function Header({ streak, studiedToday, xpToday, dailyGoal = 50 }: Props) {
+export default function Header({ children, streak, studiedToday, xpToday, dailyGoal = 50 }: Props) {
   const pct = Math.min(100, Math.round((xpToday / dailyGoal) * 100));
   return (
     <header className="sticky top-0 z-30 border-b-2 border-slate-200 bg-white/95 backdrop-blur">
@@ -51,6 +55,7 @@ export default function Header({ streak, studiedToday, xpToday, dailyGoal = 50 }
           </div>
         </div>
       </div>
+      {children && <div className="mx-auto max-w-xl px-4 pb-3">{children}</div>}
     </header>
   );
 }

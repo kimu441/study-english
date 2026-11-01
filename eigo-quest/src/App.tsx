@@ -7,6 +7,7 @@ import Session from './components/session/Session';
 import Dashboard from './components/Dashboard';
 import PlanView from './components/plan/PlanView';
 import PlanBanner from './components/plan/PlanBanner';
+import TodayLeftBar from './components/plan/TodayLeftBar';
 import { getStages } from './data/decks';
 import type { Card, ComposeMode, Deck, WordMode } from './types';
 import { useStore } from './lib/store';
@@ -84,7 +85,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header streak={streak.current} studiedToday={streak.studiedToday} xpToday={xpToday} />
+      <Header streak={streak.current} studiedToday={streak.studiedToday} xpToday={xpToday}>
+        {isDeck(tab) && planSummary && <TodayLeftBar summary={planSummary} />}
+      </Header>
       <main className="mx-auto max-w-xl space-y-6 px-4 pb-28 pt-5">
         {isDeck(tab) && (
           <>
