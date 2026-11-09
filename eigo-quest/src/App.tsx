@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { BarChart3, BookOpen, CalendarDays, MessageSquareText, RotateCcw } from 'lucide-react';
+import { BarChart3, BookOpen, CalendarDays, Layers, MessageSquareText, RotateCcw } from 'lucide-react';
 import Header from './components/Header';
 import TrackHome from './components/TrackHome';
 import ReviewList from './components/ReviewList';
 import Session from './components/session/Session';
 import Dashboard from './components/Dashboard';
 import PlanView from './components/plan/PlanView';
+import AddedWordsView from './components/AddedWordsView';
 import PlanBanner from './components/plan/PlanBanner';
 import TodayLeftBar from './components/plan/TodayLeftBar';
 import { getStages } from './data/decks';
@@ -17,11 +18,12 @@ import { pickSessionCards, type SessionItem, type SessionMode } from './lib/sess
 import { computePlan } from './lib/plan';
 import { usePref } from './lib/usePref';
 
-type Tab = Deck | 'review' | 'plan' | 'dashboard';
+type Tab = Deck | 'added' | 'review' | 'plan' | 'dashboard';
 
 const TABS = [
   ['word', '単語', BookOpen],
   ['composition', '英作文', MessageSquareText],
+  ['added', '追加', Layers],
   ['review', '復習', RotateCcw],
   ['plan', '計画', CalendarDays],
   ['dashboard', '記録', BarChart3],
@@ -99,6 +101,7 @@ export default function App() {
             />
           </>
         )}
+        {tab === 'added' && <AddedWordsView />}
         {tab === 'review' && <ReviewList cards={cards} onStart={(pool) => start(pool, 'review')} onRemove={removeFromReview} />}
         {tab === 'plan' && <PlanView cards={cards} logs={logs} plan={plan} summary={planSummary} today={today} onSave={setPlan} onGo={setTab} />}
         {tab === 'dashboard' && <Dashboard cards={cards} logs={logs} onDemo={loadDemo} onReset={reset} />}
