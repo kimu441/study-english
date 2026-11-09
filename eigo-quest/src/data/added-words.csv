@@ -4,6 +4,7 @@ term,名,期間／用語,The term of the contract is one year.,契約の「条�
 particular,形,特別の／好みがうるさい,She is particular about food.,in particular / be particular about,1
 patient,形/名,我慢強い,Please be patient with us.,名詞で「患者」 / be patient with,1
 according to,前,〜に従って／〜によると,According to the schedule the meeting starts at ten.,according to the schedule,1
+accordingly,副,それに応じて／このように,We changed the plan accordingly.,,1
 therefore,副,従って／その結果,The road was closed; therefore we took the train.,,
 rather,副,むしろ／かなり,I would rather stay home.,rather than / would rather do,1
 unlike,前,〜と違って,Unlike his brother he likes sports.,unlike other models,
@@ -36,7 +37,7 @@ represent,動,象徴する／表現する／代表する,The flag represents fre
 waste,動/名,〜を浪費する／無駄,Don't waste your time.,waste time,
 crime,名,犯罪,Crime has decreased in the city.,,
 medium,名/形,媒体／手段／中間,TV is a popular medium.,,1
-bill,名,請求書／勘定書,Please pay the bill by Friday.,,1
+bill,名,請求書／勘定書／法案／紙幣,Please pay the bill by Friday.,,1
 resource,名,資源,Water is a valuable resource.,human resources,
 aspect,名,側面／観点／様子,This is an important aspect.,,
 detail,名,詳細,Please explain in detail.,detailed＝詳細な / in detail,
@@ -69,10 +70,10 @@ contribute,動,〜に貢献する,She contributed to the project.,contribute to,
 desire,動/名,〜を望む,He desires success.,名詞で「願望・欲求」,
 identify,動,〜を特定する,Can you identify the problem?,identify A as B,
 income,名,定期的な収入,Her income is high.,profit＝利益,
-site,名,用地,The site is near the station.,construction site,
+site,名,用地／場所,The site is near the station.,construction site,
 career,名,経歴／職業,He has a long career in sales.,,1
 household,名,世帯／家族,Every household received a letter.,,
-principle,名,原理／原則,He has strong principles.,「原理主義」と言っていたので fundamentalism の可能性もあり,1
+principle,名,原理／原則／主義,He has strong principles.,,
 atmosphere,名,雰囲気／大気,The cafe has a nice atmosphere.,,
 race,名,民族／人種／競争,People of every race live here.,,
 immigrant,名,移民,Many immigrants came to the city.,,
@@ -96,7 +97,7 @@ tie,動/名,〜を結びつける,Tie the rope to the post.,,
 invent,動,〜を発明する,Edison invented the light bulb.,,
 preserve,動,〜を保存する／〜から保護する,We must preserve nature.,,
 stick,動/名,くっつく／貼り付ける,Stick the label on the box.,,
-confuse,動,混合する／困惑させる,The map confused me.,,
+confuse,動,混同する／困惑させる,The map confused me.,,
 excuse,動/名,〜を大目に見る／弁解する,Excuse me for being late.,,
 recall,動,〜を思い出す,I can't recall his name.,remember と同義,
 conduct,動/名,〜を行う／導く／案内する,They conducted a survey.,,
@@ -133,7 +134,7 @@ debate,名/動,論争,There was a debate about taxes.,,
 revolution,名,革命／回転,The industrial revolution changed life.,,
 custom,名,習慣,It is a local custom.,customs＝税関／関税,
 threat,名,恐れ／脅し,The storm is a threat to farmers.,,1
-struggle,動/名,奮闘／懸命の努力,It was a struggle to finish.,strive の可能性もあり,1
+struggle,動/名,奮闘／懸命の努力,It was a struggle to finish.,,
 extreme,形,極端な,The heat was extreme.,,
 relative,形/名,相対的な,Prices are relative to income.,名詞で「親戚」,
 primary,形,最も重要な,Safety is our primary concern.,,
@@ -214,7 +215,7 @@ ability,名,能力／才能,He has the ability to lead.,,
 anxiety,名,不安／心配,She felt anxiety before the test.,「〜したいという切望」の意味もあり,
 tough,形,困難な／頑丈な／厳しい,It was a tough decision.,,
 severe,形,痛みなどがひどい／厳しい／深刻な,The damage was severe.,,1
-constant,形,絶え間ない,There is constant noise.,,
+constant,形,絶え間ない／不変の,There is constant noise.,,
 sensitive,形,〜に敏感な,Skin is sensitive to the sun.,sensitive to,
 nervous,形,緊張して／神経質な,I felt nervous before the interview.,,
 narrow,形,狭い,The road is narrow.,反対語 broad / wide,

@@ -70,8 +70,18 @@ function seedWords(): AddedWord[] {
 
 function load(): AddedWord[] {
   const saved = readJson<Saved>(STORAGE_KEY);
-  if (!saved || !Array.isArray(saved.words)) return seedWords();
-  return saved.words;
+  const seed = seedWords();
+  if (!saved || !Array.isArray(saved.words)) return seed;
+
+  // 同梱データの修正・追加を取り込む。分類（status）と自分で追加した単語はそのまま残す
+  const seedById = new Map(seed.map((w) => [w.id, w]));
+  const merged = saved.words.map((w) => {
+    const s = seedById.get(w.id);
+    if (!s || w.custom) return w;
+    return { ...s, status: w.status, updatedAt: w.updatedAt };
+  });
+  const have = new Set(merged.map((w) => w.id));
+  return [...merged, ...seed.filter((s) => !have.has(s.id))];
 }
 
 export type NewWord = Pick<AddedWord, 'english' | 'pos' | 'japanese' | 'example'>;
